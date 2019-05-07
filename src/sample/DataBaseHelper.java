@@ -92,5 +92,183 @@ public class DataBaseHelper {
 
         return true;
     }
+
+    public boolean confirmOrder(int isbn, String pname) {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL confirm_order(" + pname + "," + isbn + ");");
+            con.close();
+        } catch (Exception e) {
+            return false;
+        }
+
+
+        return true;
+    }
+
+    public boolean promote(String un) {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL promote_user(" + un + ");");
+            con.close();
+        } catch (Exception e) {
+            return false;
+        }
+
+
+        return true;
+    }
+
+    public boolean addNewAuthor(String authName) {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL add_publisher(" + authName + ");");
+            con.close();
+        } catch (Exception e) {
+            return false;
+        }
+
+
+        return true;
+
+    }
+
+    public boolean addAddressToAuth(String name, String address) {
+
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL add_address(" + name + "," + address + ");");
+            con.close();
+        } catch (Exception e) {
+            return false;
+        }
+
+
+        return true;
+    }
+
+    public boolean addPhoneToAuth(String name, String phone) {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL add_phone(" + name + "," + phone + ");");
+            con.close();
+        } catch (Exception e) {
+            return false;
+        }
+
+
+        return true;
+    }
+
+    public boolean addAuthor2(String name) {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL add_author(" + name + "," + name + ");");
+            con.close();
+        } catch (Exception e) {
+            return false;
+        }
+
+
+        return true;
+    }
+
+
+    public ResultSet totalSalesPrevMonth() {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL totalsales();");//TODO
+            ResultSet rs = stmt.getResultSet();
+
+            con.close();
+            return rs;
+        } catch (Exception e) {
+            return null;
+        }
+
+
+    }
+
+    public ResultSet top5CustomersInlast3Monthes() {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL top5customers();");//TODO
+            ResultSet rs = stmt.getResultSet();
+
+            con.close();
+            return rs;
+        } catch (Exception e) {
+            return null;
+        }
+
+
+    }
+
+    public ResultSet top10salesInLastThreeMonthes() {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL top10sales();");//TODO
+            ResultSet rs = stmt.getResultSet();
+
+//            ResultSetMetaData rsmd = rs.getMetaData();
+//            int columnsNumber = rsmd.getColumnCount();
+//            while(rs.next())
+//                for (int i = 1; i <= columnsNumber; i++) {
+//                    String columnValue = rs.getString(i);
+//                    System.out.print(columnValue + " " + rsmd.getColumnName(i)+"\n");
+//                }
+
+            con.close();
+            return rs;
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+    public ResultSet searchBook(String title, String authorName, String publisherName, String category, int pubYear, int priceMin, int priceMax) {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
+                    pubYear + "," + priceMin + "," + priceMax + ");");
+            ResultSet rs = stmt.getResultSet();
+            con.close();
+            return rs;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
 }
 
