@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ManagerController">
+   <children>
+      <Button fx:id="addBookBTN" layoutX="32.0" layoutY="21.0" mnemonicParsing="false" onAction="#STbook" prefHeight="35.0" prefWidth="238.0" text="add new book" />
+      <Button fx:id="modifyBookBTN" layoutX="32.0" layoutY="65.0" mnemonicParsing="false" onAction="#STModBook" prefHeight="35.0" prefWidth="238.0" text="modify existing book" />
+      <Button fx:id="placeOrderBTN" layoutX="33.0" layoutY="113.0" mnemonicParsing="false" onAction="#STplaceOrd" prefHeight="35.0" prefWidth="238.0" text="place orders" />
+      <Button fx:id="confirmOrderBTN" layoutX="33.0" layoutY="158.0" mnemonicParsing="false" onAction="#STconfOrd" prefHeight="35.0" prefWidth="238.0" text="conferm order" />
+      <Button fx:id="promoteBTN" layoutX="33.0" layoutY="202.0" mnemonicParsing="false" onAction="#STpromote" prefHeight="35.0" prefWidth="238.0" text="promote user to manager" />
+      <Button fx:id="viewTotSales" layoutX="31.0" layoutY="343.0" mnemonicParsing="false" onAction="#totSalesPrevMonth" prefHeight="35.0" prefWidth="238.0" text="view total sales for he prev month" />
+      <Button fx:id="viewTop5Customers" layoutX="32.0" layoutY="388.0" mnemonicParsing="false" onAction="#top5CustomersIn3Monthes" prefHeight="35.0" prefWidth="238.0" text="top 5 customers in last three monthes" />
+      <Button fx:id="viewTop10SellingBooks" layoutX="31.0" layoutY="437.0" mnemonicParsing="false" onAction="#top10SellingBooksIn3Monthes" prefHeight="35.0" prefWidth="238.0" text="top 10 selling booksin last three monthes " />
+      <Pane fx:id="addBookpane1" layoutX="327.0" layoutY="62.0" prefHeight="448.0" prefWidth="406.0" visible="false">
+         <children>
+            <TextField fx:id="addbooktitle" layoutX="203.0" layoutY="71.0" />
+            <TextField fx:id="addbookpubname" layoutX="203.0" layoutY="115.0" />
+            <TextField fx:id="addbookprice" layoutX="203.0" layoutY="206.0" />
+            <TextField fx:id="addbookcat" layoutX="203.0" layoutY="255.0" />
+            <TextField fx:id="addbookquant" layoutX="203.0" layoutY="297.0" />
+            <TextField fx:id="addbookthres" layoutX="203.0" layoutY="346.0" />
+            <TextField fx:id="addBookISBN" layoutX="203.0" layoutY="30.0" />
+            <Button fx:id="addbookcnfrmBTN" layoutX="153.0" layoutY="388.0" mnemonicParsing="false" onAction="#addBook" text="add book" />
+            <Label layoutX="88.0" layoutY="34.0" text="ISBN" />
+            <Label layoutX="90.0" layoutY="75.0" text="title" />
+            <Label layoutX="60.0" layoutY="119.0" text="publisher name" />
+            <Label layoutX="86.0" layoutY="210.0" text="price " />
+            <Label layoutX="77.0" layoutY="259.0" text="category" />
+            <Label layoutX="79.0" layoutY="301.0" text="quantity" />
+            <Label layoutX="75.0" layoutY="350.0" text="threshold" />
+            <TextField fx:id="pubyear" layoutX="203.0" layoutY="158.0" />
+            <Label layoutX="59.0" layoutY="162.0" text="publishing year" />
+         </children>
+      </Pane>
+      <Separator layoutX="292.0" layoutY="78.0" orientation="VERTICAL" prefHeight="364.0" prefWidth="7.0" />
+      <Pane fx:id="addBookpane2" layoutX="344.0" layoutY="105.0" prefHeight="300.0" prefWidth="372.0" visible="false">
+         <children>
+            <Button fx:id="addAuthorBTN" layoutX="160.0" layoutY="216.0" mnemonicParsing="false" onAction="#addAuthor" text="add author" />
+            <TextField fx:id="addAuthorTxt" layoutX="197.0" layoutY="112.0" />
+            <Label fx:id="addAuthorLabelISBN" layoutX="90.0" layoutY="116.0" text="book ISBN" />
+         </children>
+      </Pane>
+      <Pane fx:id="modifyPane" layoutX="332.0" layoutY="105.0" prefHeight="322.0" prefWidth="383.0" visible="false">
+         <children>
+            <TextField fx:id="modifyISBN" layoutX="174.0" layoutY="70.0" />
+            <Label layoutX="76.0" layoutY="74.0" text="ISBN to modify" />
+            <Label layoutX="80.0" layoutY="153.0" text="new Quantity" />
+            <TextField fx:id="modifyQuantity" layoutX="174.0" layoutY="149.0" />
+            <Button fx:id="modifyBTN2" layoutX="166.0" layoutY="229.0" mnemonicParsing="false" onAction="#modify" text="modify" />
+            <Label fx:id="modifyErrorLbl" layoutX="178.0" layoutY="30.0" text="error label" />
+         </children>
+      </Pane>
+      <Pane fx:id="addAuthorPane1" layoutX="345.0" layoutY="78.0" prefHeight="376.0" prefWidth="324.0" visible="false">
+         <children>
+            <TextField fx:id="addAddress" layoutX="161.0" layoutY="149.0" />
+            <Button fx:id="addAuthor1" layoutX="61.0" layoutY="149.0" mnemonicParsing="false" onAction="#addAuthAddress" text="add address" />
+            <Button layoutX="61.0" layoutY="199.0" mnemonicParsing="false" onAction="#addAuthPhone" text="add phone" />
+            <Button fx:id="addAuthor111" layoutX="136.0" layoutY="315.0" mnemonicParsing="false" onAction="#resetView" text="i'am done" />
+            <TextField fx:id="addPhone" layoutX="161.0" layoutY="199.0" />
+         </children>
+      </Pane>
+      <Pane fx:id="addAuthorPane" layoutX="345.0" layoutY="67.0" prefHeight="376.0" prefWidth="324.0" visible="false">
+         <children>
+            <TextField fx:id="addAuthName" layoutX="161.0" layoutY="149.0" />
+            <Label layoutX="61.0" layoutY="153.0" text="publisher name" />
+            <Button fx:id="addAuthor" layoutX="136.0" layoutY="280.0" mnemonicParsing="false" onAction="#addAuthor" text="add publisher" />
+         </children>
+      </Pane>
+      <Pane fx:id="author2Pane" layoutX="355.0" layoutY="56.0" prefHeight="376.0" prefWidth="324.0" visible="false">
+         <children>
+            <TextField fx:id="addAUTHNAME" layoutX="162.0" layoutY="157.0" />
+            <Label layoutX="58.0" layoutY="161.0" text="author name" />
+            <Button fx:id="placeOrderBTN2" layoutX="124.0" layoutY="242.0" mnemonicParsing="false" onAction="#addAuthor2" text="add author" />
+         </children>
+      </Pane>
+      <Pane fx:id="confirmPane" layoutX="360.0" layoutY="91.0" prefHeight="330.0" prefWidth="311.0" visible="false">
+         <children>
+            <TextField fx:id="cOrderPubN" layoutX="138.0" layoutY="85.0" />
+            <TextField fx:id="cOrderISBN" layoutX="138.0" layoutY="165.0" />
+            <Label layoutX="31.0" layoutY="89.0" text="publisher name" />
+            <Label layoutX="59.0" layoutY="169.0" text="ISBN" />
+            <Button fx:id="cOrderConf" layoutX="121.0" layoutY="243.0" mnemonicParsing="false" onAction="#confirmOrder" text="CONFIRM" />
+         </children>
+      </Pane>
+      <Pane fx:id="promote" layoutX="345.0" layoutY="105.0" prefHeight="308.0" prefWidth="345.0" visible="false">
+         <children>
+            <TextField fx:id="username" layoutX="98.0" layoutY="132.0" />
+            <Label layoutX="113.0" layoutY="87.0" text="user name to promote" />
+            <Button layoutX="136.0" layoutY="192.0" mnemonicParsing="false" onAction="#promote" text="PROMOTE" />
+         </children>
+      </Pane>
+      <ScrollPane fx:id="analysis" layoutX="344.0" layoutY="66.0" prefHeight="376.0" prefWidth="365.0" visible="false">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+        </content>
+      </ScrollPane>
+      <Button fx:id="addAuthor" layoutX="31.0" layoutY="298.0" mnemonicParsing="false" onAction="#viewAddAuth" prefHeight="35.0" prefWidth="238.0" text="add publisher" />
+      <Button fx:id="addPub" layoutX="31.0" layoutY="249.0" mnemonicParsing="false" onAction="#viewAuth" prefHeight="35.0" prefWidth="238.0" text="add author" />
+      <Pane fx:id="placeOrderpane" layoutX="365.0" layoutY="66.0" prefHeight="376.0" prefWidth="324.0" visible="false">
+         <children>
+            <TextField fx:id="orderPubName1" layoutX="162.0" layoutY="86.0" />
+            <TextField fx:id="orderISBN1" layoutX="162.0" layoutY="139.0" />
+            <TextField fx:id="orderQuan1" layoutX="162.0" layoutY="188.0" />
+            <Label layoutX="62.0" layoutY="90.0" text="publisher name" />
+            <Label layoutX="62.0" layoutY="143.0" text="ISBN" />
+            <Label layoutX="62.0" layoutY="192.0" text="Quantity" />
+            <Button fx:id="placeOrderBTN21" layoutX="136.0" layoutY="280.0" mnemonicParsing="false" onAction="#placeOrder" text="place order" />
+         </children>
+      </Pane>
+   </children>
+</Pane>

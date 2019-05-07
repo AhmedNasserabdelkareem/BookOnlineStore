@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="495.0" prefWidth="428.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SignUpController">
+
+    <children>
+        <Button fx:id="signUP" layoutX="126.0" layoutY="407.0" mnemonicParsing="false" onAction="#signUp" prefHeight="31.0" prefWidth="151.0" text="sign up" textFill="#f80000">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Button>
+        <Label layoutX="31.0" layoutY="41.0" text="email">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+        <TextField fx:id="SUEmail" layoutX="173.0" layoutY="41.0" prefHeight="25.0" prefWidth="223.0" />
+      <TextField fx:id="SUFirstName" layoutX="173.0" layoutY="88.0" prefHeight="25.0" prefWidth="223.0" />
+      <TextField fx:id="SUSecondName" layoutX="173.0" layoutY="131.0" prefHeight="25.0" prefWidth="223.0" />
+      <TextField fx:id="SUUserName" layoutX="173.0" layoutY="176.0" prefHeight="25.0" prefWidth="223.0" />
+      <PasswordField fx:id="USPass" layoutX="173.0" layoutY="217.0" prefHeight="25.0" prefWidth="223.0" />
+      <PasswordField fx:id="USPass1" layoutX="173.0" layoutY="258.0" prefHeight="17.0" prefWidth="223.0" />
+      <TextField fx:id="SUSHAdd" layoutX="173.0" layoutY="302.0" prefHeight="25.0" prefWidth="223.0" />
+      <TextField fx:id="PhoneAdd" layoutX="173.0" layoutY="347.0" prefHeight="25.0" prefWidth="223.0" />
+      <Label layoutX="27.0" layoutY="88.0" text="first name">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label layoutX="28.0" layoutY="131.0" text="last name">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label layoutX="25.0" layoutY="176.0" text="user name">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label layoutX="28.0" layoutY="217.0" text="password">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label layoutX="25.0" layoutY="261.0" text="confirm password">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label layoutX="25.0" layoutY="305.0" text="shipping address">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label layoutX="27.0" layoutY="350.0" text="phone Number">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label fx:id="signInBtn" layoutX="152.0" layoutY="453.0" onMouseClicked="#openSignIn" text="Already Registered" textFill="#0011ff" underline="true">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Label>
+    </children>
+
+</Pane>
