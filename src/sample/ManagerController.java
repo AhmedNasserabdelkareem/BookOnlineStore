@@ -296,4 +296,82 @@ public class ManagerController {
         }
     }
 
+    private  void showScrollView(){
+        show(null);
+        analysis.setVisible(true);
+        analysis.setDisable(false);
+    }
+    @FXML
+    void totSalesPrevMonth(ActionEvent event){
+      showScrollView();
+    }
+
+    @FXML
+    void top5CustomersIn3Monthes(ActionEvent event){
+        showScrollView();
+
+    }
+
+    @FXML
+    void top10SellingBooksIn3Monthes(ActionEvent event){
+        showScrollView();
+
+    }
+
+    @FXML
+    void viewAddAuth(){
+        show(addAuthorPane);
+    }
+
+
+
+    @FXML
+    void  addAuthor(){
+
+        String pn = addAuthName.getText();
+        if(DataBaseHelper.getInstance().addNewAuthor(pn)){
+            authorNameToAdd = pn;
+            //TODO move on
+            show(addAuthorPane);
+        }else {
+            //TODO error pub name does exist !!
+        }
+
+
+    }
+
+    @FXML
+    void addAuthAddress(){
+       if(! DataBaseHelper.getInstance().addAddressToAuth(authorNameToAdd,addAddress.getText())){
+            //TODO err
+       }else{
+           addAddress.setText("another !");
+       }
+    }
+
+    @FXML
+    void addAuthPhone(){
+        if(! DataBaseHelper.getInstance().addPhoneToAuth(authorNameToAdd,addPhone.getText())){
+            //TODO err
+        }else {
+            addPhone.setText("another !");
+        }
+    }
+    @FXML
+    void resetView(){
+        show(addBookpane1);
+    }
+
+    @FXML
+    void addAuthor2(){
+        if(!DataBaseHelper.getInstance().addAuthor2(addAUTHNAME.getText())){
+            //TODO error
+        }
+
+
+    }
+    @FXML
+    void viewAuth(){
+        show(author2Pane);
+    }
 }
