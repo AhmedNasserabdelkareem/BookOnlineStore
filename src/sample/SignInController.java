@@ -32,6 +32,7 @@ public class SignInController {
     private void logIn() {
         //TODO login in database
 
+
         UserController.userName = usrNameTxt.getText();
         signInStage.close();
     }

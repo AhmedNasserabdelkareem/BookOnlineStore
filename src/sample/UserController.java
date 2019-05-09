@@ -281,6 +281,10 @@ public class UserController {
         setNumsOnly(priceMaxTxt);
         setNumsOnly(priceMinTxt);
 
+        categoriesMenu.getItems().removeAll(categoriesMenu.getItems());
+        categoriesMenu.getItems().addAll("Option A", "Option B", "Option C");
+        categoriesMenu.getSelectionModel().select("Option B");
+
     }
 
     @FXML
