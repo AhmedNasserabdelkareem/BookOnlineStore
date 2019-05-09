@@ -31,8 +31,31 @@ public class SignInController {
     @FXML
     private void logIn() {
         //TODO login in database
+        boolean manager = false;
+        int code = DataBaseHelper.getInstance().signin(usrNameTxt.getText(), passTxt.getText());
+        switch (code) {
+            case -1:
+                MassageController.getInstance().show("Login error");
+                break;
+            case 0:
+                MassageController.getInstance().show("Username not found");
+                break;
+            case 1:
+                MassageController.getInstance().show("Wrong password");
+                break;
+            case 2:
+                manager = true;
+                break;
+            case 3:
+                //TODO user found correct pass do nothing
+                break;
+            default:
+                MassageController.getInstance().show("Login error");
+                break;
+        }
 
-
+        UserController userController = new UserController();
+        userController.show(manager);
         UserController.userName = usrNameTxt.getText();
         signInStage.close();
     }

@@ -284,6 +284,25 @@ closeConnection();
         }
     }
 
+    public  int signin(String usrName , String password){
+
+        try {
+            openConnection();
+            Statement stmt = con.createStatement();
+            CallableStatement st = con.prepareCall("{ ? = call check_login(\""+usrName+"\",\""+password+"\")}");
+            int count = 0;
+            st.registerOutParameter(1, Types.INTEGER);
+            st.execute();
+            count = st.getInt(1);
+            System.out.println(count);
+            con.close();
+            return count;
+        } catch (Exception e) {
+            MassageController.getInstance().show(e.toString());
+        }
+        return -1;
+
+    }
     public void signUp(String userName, String pass, String firstN, String lastN, String email, String phone, String address) {
         try {
             openConnection();

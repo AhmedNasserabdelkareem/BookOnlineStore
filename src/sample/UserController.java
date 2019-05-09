@@ -282,8 +282,8 @@ public class UserController {
         setNumsOnly(priceMinTxt);
 
         categoriesMenu.getItems().removeAll(categoriesMenu.getItems());
-        categoriesMenu.getItems().addAll("Option A", "Option B", "Option C");
-        categoriesMenu.getSelectionModel().select("Option B");
+        categoriesMenu.getItems().addAll("Science", "Art", "Religion", "History", "Geography");
+        categoriesMenu.getSelectionModel().select("Science");
 
     }
 
