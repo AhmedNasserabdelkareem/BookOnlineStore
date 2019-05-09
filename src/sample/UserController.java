@@ -1,19 +1,22 @@
 package sample;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import model.BookSearchResult;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class UserController {
@@ -75,6 +78,9 @@ public class UserController {
     private Button orderBtn;
 
     @FXML
+    private Button addToCart;
+
+    @FXML
     private Button manageBtn;
 
     @FXML
@@ -83,7 +89,38 @@ public class UserController {
     @FXML
     private TableView cartTable;
 
-    private LinkedList<ResultSet> cartItem = new LinkedList<>();
+    @FXML
+    private TableColumn searchTableTitle;
+
+    @FXML
+    private TableColumn searchTableYear;
+
+    @FXML
+    private TableColumn searchTablePrice;
+
+    @FXML
+    private TableColumn searchTableQuantity;
+
+    @FXML
+    private TableColumn cartTableTitle;
+
+    @FXML
+    private TableColumn cartTableYear;
+
+    @FXML
+    private TableColumn cartTablePrice;
+
+    @FXML
+    private TableColumn cartTableQuantity;
+
+    @FXML
+    private TextField quantityTxt;
+    @FXML
+    private Label totalMoney;
+
+    private LinkedList<BookSearchResult> cart = new LinkedList<>();
+
+    public static String userName;
 
     @FXML
     void EditProfile(ActionEvent event) {
@@ -131,44 +168,45 @@ public class UserController {
 
     @FXML
     void search(ActionEvent event) {
-        ResultSet rs = DataBaseHelper.getInstance().searchBook(bookTitleTxt.getText(), authorTxt.getText(), publisherTxt.getText(),
-                categoriesMenu.getValue(), Integer.valueOf(publishDate.getText()), Integer.valueOf(priceMinTxt.getText()), Integer.valueOf(priceMaxTxt.getText()));
+
+        Integer date = null, priceMin = null, priceMax = null;
+        String bookTitle = null, author = null, publisher = null, cat = null;
         try {
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
+            date = Integer.valueOf(publishDate.getText());
+            priceMin = Integer.valueOf(priceMinTxt.getText());
+            priceMax = Integer.valueOf(priceMaxTxt.getText());
+        } catch (NumberFormatException e) {
+        }
+
+        if (!bookTitleTxt.getText().equals(""))
+            bookTitle = bookTitleTxt.getText();
+
+        try {
+            if (!categoriesMenu.getSelectionModel().getSelectedItem().equals(""))
+                cat = categoriesMenu.getSelectionModel().getSelectedItem();
+        } catch (NullPointerException e) {
+        }
+
+        if (!authorTxt.getText().equals(""))
+            author = authorTxt.getText();
+
+        if (!publisherTxt.getText().equals(""))
+            publisher = publisherTxt.getText();
+
+        ResultSet rs = DataBaseHelper.getInstance().searchBook(bookTitle, author, publisher,
+                cat, date, priceMin, priceMax);
+        makeSearchTable(rs);
+        DataBaseHelper.getInstance().closeConnection();
+    }
+
+    private void makeSearchTable(ResultSet rs) {
+        try {
 
             while (rs.next()) {
-                String title = rs.getString(2);
-                String year = rs.getString(4);
-                String price = rs.getString(5);
-                String quantity = rs.getString(8);
-                searchResultTable.getColumns().add(0, title);
-                searchResultTable.getColumns().add(1, rs.getString(year));
-                searchResultTable.getColumns().add(2, rs.getString(price));
-                searchResultTable.getColumns().add(3, rs.getString(quantity));
+                BookSearchResult book = new BookSearchResult(rs.getInt(1), rs.getString(2), rs.getString(4),
+                        rs.getString(5), rs.getString(8));
 
-                Button cartBtn = new Button("+");
-                cartBtn.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        cartItem.add(rs);
-                        cartTable.getColumns().add(0, title);//title
-                        cartTable.getColumns().add(1,year);//year
-                        cartTable.getColumns().add(2, price);//price
-                        cartTable.getColumns().add(3, "5");//quantitiy
-
-                        Button cartRemove = new Button("X");
-                        cartRemove.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event){
-                                cartTable.
-                            }
-                        });
-                    }
-                });
-
-                searchResultTable.getColumns().add(4, cartBtn);//title
-
+                searchResultTable.getItems().add(book);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -181,6 +219,83 @@ public class UserController {
         managerController.show();
     }
 
+    @FXML
+    void removeFromCart(ActionEvent event) {
+        BookSearchResult selectedItem = (BookSearchResult) cartTable.getSelectionModel().getSelectedItem();
+        cart.remove(isBookInCart(selectedItem.getIsbn()));
+        cartTable.getItems().remove(selectedItem);
+    }
+
+    @FXML
+    void addToCart(ActionEvent event) {
+        BookSearchResult selectedItem = (BookSearchResult) searchResultTable.getSelectionModel().getSelectedItem();
+
+        int storeQuantity;
+        try {
+            storeQuantity = Integer.valueOf(selectedItem.getQuantity());
+        } catch (NullPointerException e) {
+            MassageController.getInstance().show("Please select a book");
+            return;
+        }
+
+        int quantity = 1;
+        if (!quantityTxt.getText().equals(""))
+            quantity = Integer.valueOf(quantityTxt.getText());
+
+        if (quantity > storeQuantity)
+            MassageController.getInstance().show("Maximum Quantity is + " + selectedItem.getQuantity());
+
+        int index = isBookInCart(selectedItem.getIsbn());
+        if (index == -1) {//notFound
+            BookSearchResult book = new BookSearchResult(selectedItem.getIsbn(), selectedItem.getBookTitle(), selectedItem.getYear(),
+                    String.valueOf(quantity * Integer.valueOf(selectedItem.getPrice())), String.valueOf(quantity));
+            cart.add(book);
+            cartTable.getItems().add(book);
+        } else {
+            BookSearchResult inCart = cart.get(index);
+            quantity += Integer.valueOf(inCart.getQuantity());
+            inCart.setQuantity(String.valueOf(quantity));
+            inCart.setPrice(String.valueOf(quantity * Integer.valueOf(selectedItem.getPrice())));
+            cartTable.refresh();
+        }
+
+        //calculate total money
+        int total = 0;
+        for (Iterator i = cart.iterator(); i.hasNext();)
+            total += Integer.valueOf(((BookSearchResult)i.next()).getPrice());
+        totalMoney.setText(String.valueOf(total));
+    }
+
+    public void initialize() {
+        searchTableTitle.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
+        searchTableYear.setCellValueFactory(new PropertyValueFactory<>("year"));
+        searchTablePrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        searchTableQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+
+        cartTableTitle.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
+        cartTableYear.setCellValueFactory(new PropertyValueFactory<>("year"));
+        cartTablePrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        cartTableQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+
+        setNumsOnly(publishDate);
+        setNumsOnly(quantityTxt);
+        setNumsOnly(priceMaxTxt);
+        setNumsOnly(priceMinTxt);
+
+    }
+
+    @FXML
+    void setNumsOnly(TextField textField) {
+        textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    textField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+    }
 
     public void show(boolean manager) {
         if (!manager)
@@ -195,6 +310,17 @@ public class UserController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private int isBookInCart(int isbn) {
+        int i = -1;
+        Iterator iterator = cart.iterator();
+        while (iterator.hasNext()) {
+            i++;
+            if (((BookSearchResult) iterator.next()).getIsbn() == isbn)
+                return i;
+        }
+        return i;
     }
 
 }

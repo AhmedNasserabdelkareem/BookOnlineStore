@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +18,7 @@ public class SignUpController {
     private static Stage signUpStage;
 
     @FXML
-    private Button signUP;
+    private TextField SUEmail;
 
     @FXML
     private TextField SUUserName;
@@ -61,6 +63,25 @@ public class SignUpController {
     @FXML
     void signUp(ActionEvent event) {
 
+        if (!USPass.getText().equals(USPass1.getText())) {
+            MassageController.getInstance().show("Password mismatch");
+            return;
+        }
+
+        DataBaseHelper.getInstance().signUp(SUUserName.getText(), USPass.getText(), SUFirstName.getText(),
+                SUSecondName.getText(), SUEmail.getText(), PhoneAdd.getText(), SUSHAdd.getText());
+    }
+
+    public void initialize(){
+        PhoneAdd.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    PhoneAdd.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
 }

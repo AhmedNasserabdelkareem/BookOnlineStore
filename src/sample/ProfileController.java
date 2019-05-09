@@ -10,6 +10,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class ProfileController {
 
     private static Stage profileStage;
@@ -35,7 +38,7 @@ public class ProfileController {
     @FXML
     private Button cancelBtn;
 
-    public void show(){
+    public void show() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("profileLayout.fxml"));
             Parent root1 = fxmlLoader.load();
@@ -58,6 +61,26 @@ public class ProfileController {
     @FXML
     void save(ActionEvent event) {
 
+        if (!prConfirmPass.getText().equals(prNewPass.getText())) {
+            MassageController.getInstance().show("Password mismatch");
+            return;
+        }
+
+        DataBaseHelper.getInstance().updateUserInfo(UserController.userName, prOldPass.getText(),
+                prNewPass.getText(), prShippingAddress.getText(), prPhoneNumber.getText());
+
+        MassageController.getInstance().show("Data updated successfully");
+    }
+
+    public void initialize() {
+        ResultSet rs = DataBaseHelper.getInstance().profileInfo(UserController.userName);
+        try {
+            prShippingAddress.setText(rs.getString(2));
+            prPhoneNumber.setText(rs.getString(3));
+            DataBaseHelper.getInstance().closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

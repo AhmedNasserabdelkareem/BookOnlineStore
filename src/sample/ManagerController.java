@@ -10,7 +10,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ManagerController {
 
@@ -150,6 +154,9 @@ public class ManagerController {
     private TextField addAddress;
     @FXML
     private TextField addPhone;
+
+    @FXML
+    private VBox analysisVbox;
 
     private int lastAddedBookISBN=-1;
 
@@ -304,18 +311,50 @@ public class ManagerController {
     @FXML
     void totSalesPrevMonth(ActionEvent event){
       showScrollView();
+        ResultSet rs = DataBaseHelper.getInstance().totalSalesPrevMonth();
+        if (rs != null){
+            analysisVbox.getChildren().clear();
+            analysisVbox.getChildren().add(new Label("ISBN\tQuantity\tUserID\tDate"));
+            try {
+                analysisVbox.getChildren().add(new Label(rs.getInt(2) + " " + rs.getInt(3) +
+                " " + rs.getInt(4) + rs.getDate(5)));
+            } catch (SQLException e) {
+                MassageController.getInstance().show(e.toString());
+            }
+        }
+        DataBaseHelper.getInstance().closeConnection();
     }
 
     @FXML
     void top5CustomersIn3Monthes(ActionEvent event){
         showScrollView();
-
+        ResultSet rs = DataBaseHelper.getInstance().top5CustomersInlast3Monthes();
+        if (rs != null){
+            analysisVbox.getChildren().clear();
+            analysisVbox.getChildren().add(new Label("UserName\tQuantity"));
+            try {
+                analysisVbox.getChildren().add(new Label(rs.getString(1) + " " + rs.getInt(2)));
+            } catch (SQLException e) {
+                MassageController.getInstance().show(e.toString());
+            }
+        }
+        DataBaseHelper.getInstance().closeConnection();
     }
 
     @FXML
     void top10SellingBooksIn3Monthes(ActionEvent event){
         showScrollView();
-
+        ResultSet rs = DataBaseHelper.getInstance().top10salesInLastThreeMonthes();
+        if (rs != null){
+            analysisVbox.getChildren().clear();
+            analysisVbox.getChildren().add(new Label("Title\tQuantity"));
+            try {
+                analysisVbox.getChildren().add(new Label(rs.getString(1) + " " + rs.getString(2)));
+            } catch (SQLException e) {
+                MassageController.getInstance().show(e.toString());
+            }
+        }
+        DataBaseHelper.getInstance().closeConnection();
     }
 
     @FXML
