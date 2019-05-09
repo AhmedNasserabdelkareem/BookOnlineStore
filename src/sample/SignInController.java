@@ -31,7 +31,29 @@ public class SignInController {
     @FXML
     private void logIn() {
         //TODO login in database
+        int code=DataBaseHelper.getInstance().signin(usrNameTxt.getText(),passTxt.getText());
+        switch (code){
+            case -1:
+                //TODO error
+                break;
+            case 0:
+                //TODO user not found
+                break;
+            case 1:
+                //TODO user found ,, wrong pass
+                break;
+            case 2:
+                //TODO Manager found correct pass
+                break;
+            case 3:
+                //TODO user found correct pass
+                break;
+            default:
+                //TODO unexpected path errror
+                break;
 
+
+        }
         UserController.userName = usrNameTxt.getText();
         signInStage.close();
     }
