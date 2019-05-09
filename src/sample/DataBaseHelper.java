@@ -289,7 +289,7 @@ closeConnection();
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL Signup (\"" + userName + "\",\"" + pass + "\",\"" + firstN + "\",\"" + lastN + "\",\"" + email +
-                    "\",\"" + phone + "\",\"" + address + "\");");
+                    "\",\"" + address + "\",\"" + phone + "\");");
             con.close();
         } catch (Exception e) {
             MassageController.getInstance().show(e.toString());
