@@ -196,7 +196,6 @@ public class UserController {
         ResultSet rs = DataBaseHelper.getInstance().searchBook(bookTitle, author, publisher,
                 cat, date, priceMin, priceMax);
         makeSearchTable(rs);
-        DataBaseHelper.getInstance().closeConnection();
     }
 
     private void makeSearchTable(ResultSet rs) {

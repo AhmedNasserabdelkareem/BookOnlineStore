@@ -77,7 +77,6 @@ public class ProfileController {
         try {
             prShippingAddress.setText(rs.getString(2));
             prPhoneNumber.setText(rs.getString(3));
-            DataBaseHelper.getInstance().closeConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
