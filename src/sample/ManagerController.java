@@ -143,9 +143,9 @@ public class ManagerController {
     private ScrollPane analysis;
 
     @FXML
-    private Pane addAuthorPane;
+    private Pane addpubPane;
     @FXML
-    private Pane addAuthorPane1;
+    private Pane addpublisherPane1;
 
     @FXML
     private  TextField addAuthName;
@@ -272,10 +272,10 @@ public class ManagerController {
 
         author2Pane.setDisable(true);
         author2Pane.setVisible(false);
-        addAuthorPane.setVisible(false);
-        addAuthorPane.setDisable(true);
-        addAuthorPane1.setVisible(false);
-        addAuthorPane1.setDisable(true);
+        addpublisherPane1.setVisible(false);
+        addpublisherPane1.setDisable(true);
+        addpubPane.setVisible(false);
+        addpubPane.setDisable(true);
 
         analysis.setVisible(false);
         analysis.setDisable(true);
@@ -322,7 +322,6 @@ public class ManagerController {
                 MassageController.getInstance().show(e.toString());
             }
         }
-        DataBaseHelper.getInstance().closeConnection();
     }
 
     @FXML
@@ -338,7 +337,6 @@ public class ManagerController {
                 MassageController.getInstance().show(e.toString());
             }
         }
-        DataBaseHelper.getInstance().closeConnection();
     }
 
     @FXML
@@ -354,26 +352,24 @@ public class ManagerController {
                 MassageController.getInstance().show(e.toString());
             }
         }
-        DataBaseHelper.getInstance().closeConnection();
     }
 
     @FXML
-    void viewAddAuth(){
-        show(addAuthorPane);
+    void viewAddpub(){
+        show(addpubPane);
     }
 
 
 
     @FXML
-    void  addAuthor(){
+    void  addpublisher(){
 
         String pn = addAuthName.getText();
-        if(DataBaseHelper.getInstance().addNewAuthor(pn)){
+        if(DataBaseHelper.getInstance().addNewPublisher(pn)){
             authorNameToAdd = pn;
-            //TODO move on
-            show(addAuthorPane);
+            show(addpublisherPane1);
         }else {
-            //TODO error pub name does exist !!
+            System.out.println("err");
         }
 
 
