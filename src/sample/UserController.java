@@ -207,7 +207,9 @@ public class UserController {
 
                 searchResultTable.getItems().add(book);
             }
-        } catch (SQLException e) {
+            DataBaseHelper.getInstance().closeConnection();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

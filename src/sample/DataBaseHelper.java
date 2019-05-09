@@ -202,7 +202,7 @@ closeConnection();
            Statement stmt = con.createStatement();
             stmt.executeQuery("CALL retreive_total_sales();");//TODO
             ResultSet rs = stmt.getResultSet();
-            closeConnection();
+
             return rs;
         } catch (Exception e) {
             MassageController.getInstance().show(e.toString());
@@ -219,7 +219,7 @@ closeConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL retreive_top_customers();");//TODO
             ResultSet rs = stmt.getResultSet();
-            closeConnection();
+
             return rs;
         } catch (Exception e) {
             MassageController.getInstance().show(e.toString());
@@ -234,7 +234,7 @@ closeConnection();
           openConnection();Statement stmt = con.createStatement();
             stmt.executeQuery("CALL retreive_top_sales();");//TODO
             ResultSet rs = stmt.getResultSet();
-            closeConnection();
+
             return rs;
         } catch (Exception e) {
             MassageController.getInstance().show(e.toString());
@@ -251,7 +251,7 @@ closeConnection();
             stmt.executeQuery("CALL Search_for_book (\"" + title + "\",\"" + authorName + "\",\"" + publisherName + "\",\"" + category + "\"," +
                     pubYear + "," + priceMin + "," + priceMax + ");");
             ResultSet rs = stmt.getResultSet();
-            closeConnection();
+
             return rs;
         } catch (Exception e) {
             MassageController.getInstance().show(e.toString());
@@ -264,7 +264,7 @@ closeConnection();
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL Retreive_user_info (\"" + userName + "\");");
-            closeConnection();
+
             return stmt.getResultSet();
         } catch (Exception e) {
             MassageController.getInstance().show(e.toString());

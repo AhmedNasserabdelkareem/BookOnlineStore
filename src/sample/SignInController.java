@@ -36,13 +36,13 @@ public class SignInController {
         switch (code) {
             case -1:
                 MassageController.getInstance().show("Login error");
-                break;
+                return;
             case 0:
                 MassageController.getInstance().show("Username not found");
-                break;
+                return;
             case 1:
                 MassageController.getInstance().show("Wrong password");
-                break;
+                return;
             case 2:
                 manager = true;
                 break;
@@ -50,7 +50,7 @@ public class SignInController {
                 //TODO user found correct pass do nothing
                 break;
             default:
-                MassageController.getInstance().show("Login error");
+                MassageController.getInstance().show("fatal error");
                 break;
         }
 

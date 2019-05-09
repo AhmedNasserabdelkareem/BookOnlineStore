@@ -322,6 +322,11 @@ public class ManagerController {
                 MassageController.getInstance().show(e.toString());
             }
         }
+        try {
+            DataBaseHelper.getInstance().closeConnection();
+        }catch (Exception e){
+
+        }
     }
 
     @FXML
@@ -337,6 +342,11 @@ public class ManagerController {
                 MassageController.getInstance().show(e.toString());
             }
         }
+        try {
+            DataBaseHelper.getInstance().closeConnection();
+        }catch (Exception e){
+
+        }
     }
 
     @FXML
@@ -351,6 +361,11 @@ public class ManagerController {
             } catch (SQLException e) {
                 MassageController.getInstance().show(e.toString());
             }
+        }
+        try {
+            DataBaseHelper.getInstance().closeConnection();
+        }catch (Exception e){
+
         }
     }
 
