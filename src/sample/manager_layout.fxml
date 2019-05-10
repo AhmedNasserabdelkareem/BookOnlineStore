@@ -14,11 +14,11 @@
       <Button fx:id="addBookBTN" layoutX="32.0" layoutY="21.0" mnemonicParsing="false" onAction="#STbook" prefHeight="35.0" prefWidth="238.0" text="add new book" />
       <Button fx:id="modifyBookBTN" layoutX="32.0" layoutY="65.0" mnemonicParsing="false" onAction="#STModBook" prefHeight="35.0" prefWidth="238.0" text="modify existing book" />
       <Button fx:id="placeOrderBTN" layoutX="33.0" layoutY="113.0" mnemonicParsing="false" onAction="#STplaceOrd" prefHeight="35.0" prefWidth="238.0" text="place orders" />
-      <Button fx:id="confirmOrderBTN" layoutX="33.0" layoutY="158.0" mnemonicParsing="false" onAction="#STconfOrd" prefHeight="35.0" prefWidth="238.0" text="conferm order" />
+      <Button fx:id="confirmOrderBTN" layoutX="33.0" layoutY="158.0" mnemonicParsing="false" onAction="#STconfOrd" prefHeight="35.0" prefWidth="238.0" text="confirm order" />
       <Button fx:id="promoteBTN" layoutX="33.0" layoutY="202.0" mnemonicParsing="false" onAction="#STpromote" prefHeight="35.0" prefWidth="238.0" text="promote user to manager" />
-      <Button fx:id="viewTotSales" layoutX="31.0" layoutY="343.0" mnemonicParsing="false" onAction="#totSalesPrevMonth" prefHeight="35.0" prefWidth="238.0" text="view total sales for he prev month" />
-      <Button fx:id="viewTop5Customers" layoutX="32.0" layoutY="388.0" mnemonicParsing="false" onAction="#top5CustomersIn3Monthes" prefHeight="35.0" prefWidth="238.0" text="top 5 customers in last three monthes" />
-      <Button fx:id="viewTop10SellingBooks" layoutX="31.0" layoutY="437.0" mnemonicParsing="false" onAction="#top10SellingBooksIn3Monthes" prefHeight="35.0" prefWidth="238.0" text="top 10 selling booksin last three monthes " />
+      <Button fx:id="viewTotSales" layoutX="13.0" layoutY="343.0" mnemonicParsing="false" onAction="#totSalesPrevMonth" prefHeight="35.0" prefWidth="270.0" text="view total sales for the prev month" />
+      <Button fx:id="viewTop5Customers" layoutX="13.0" layoutY="388.0" mnemonicParsing="false" onAction="#top5CustomersIn3Monthes" prefHeight="35.0" prefWidth="270.0" text="top 5 customers in last three monthes" />
+      <Button fx:id="viewTop10SellingBooks" layoutX="14.0" layoutY="437.0" mnemonicParsing="false" onAction="#top10SellingBooksIn3Monthes" prefHeight="35.0" prefWidth="270.0" text="top 10 selling books in last three monthes " />
       <Pane fx:id="addBookpane1" layoutX="327.0" layoutY="62.0" prefHeight="448.0" prefWidth="406.0" visible="false">
          <children>
             <TextField fx:id="addbooktitle" layoutX="203.0" layoutY="71.0" />
