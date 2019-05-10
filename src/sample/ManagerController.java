@@ -162,6 +162,9 @@ public class ManagerController {
     private static Stage managerStage;
     private String authorNameToAdd;
 
+    public Stage getStage(){
+        return managerStage;
+    }
 
     public void show() {
         try {

@@ -130,6 +130,14 @@ public class UserController {
     }
 
     @FXML
+    void logout(){
+
+        SignInController signInController = new SignInController();
+        signInController.show();
+        userStage.close();
+        currentMC.getStage().close();
+    }
+    @FXML
     void filterAuthor(ActionEvent event) {
         authorTxt.setDisable(!filterAuthorCheck.isSelected());
     }
@@ -234,10 +242,11 @@ public class UserController {
         }
     }
 
+    private ManagerController currentMC;
     @FXML
     void manage() {
-        ManagerController managerController = new ManagerController();
-        managerController.show();
+        currentMC = new ManagerController();
+        currentMC.show();
     }
 
     @FXML
