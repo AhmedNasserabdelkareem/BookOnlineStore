@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -63,6 +62,16 @@ public class SignUpController {
     @FXML
     void signUp(ActionEvent event) {
 
+        if (!isValidEmailAddress(SUEmail.getText())){
+            MassageController.getInstance().show("Invalid Email address");
+            return;
+        }
+
+        if (USPass.getText().length() < 8){
+            MassageController.getInstance().show("Password must be at least 8 digits");
+            return;
+        }
+
         if (!USPass.getText().equals(USPass1.getText())) {
             MassageController.getInstance().show("Password mismatch");
             return;
@@ -85,6 +94,24 @@ public class SignUpController {
                 if (!newValue.matches("\\d*")) {
                     PhoneAdd.setText(newValue.replaceAll("[^\\d]", ""));
                 }
+            }
+        });
+
+        onlyLetters(SUFirstName);
+        onlyLetters(SUSecondName);
+    }
+
+    private boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
+    private void onlyLetters (TextField textField){
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\sa-zA-Z*")) {
+                textField.setText(newValue.replaceAll("[^\\sa-zA-Z]", ""));
             }
         });
     }
