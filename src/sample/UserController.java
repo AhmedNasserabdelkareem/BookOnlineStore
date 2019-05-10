@@ -261,6 +261,12 @@ public class UserController {
         BookSearchResult selectedItem = (BookSearchResult) cartTable.getSelectionModel().getSelectedItem();
         cart.remove(isBookInCart(selectedItem.getIsbn()));
         cartTable.getItems().remove(selectedItem);
+
+        //calculate total money
+        int total = 0;
+        for (Iterator i = cart.iterator(); i.hasNext(); )
+            total += Integer.valueOf(((BookSearchResult) i.next()).getPrice());
+        totalMoney.setText(String.valueOf(total) + "$");
     }
 
     @FXML
