@@ -75,7 +75,6 @@ public class OrderController {
         int sum = 0;
         String num = number + "";
         for (int i = size - 2; i >= 0; i -= 2) {
-            System.out.println(Integer.parseInt(num.charAt(i) + "") * 2);
             sum += getDigit(Integer.parseInt(num.charAt(i) + "") * 2);
         }
 
