@@ -46,8 +46,8 @@ public class OrderController {
             long number = Long.valueOf(num);
             if ((sumOfDoubleEvenPlace(number, num.length()) +
                     sumOfOddPlace(number, num.length())) % 10 == 0) {
-                orderBooks();
-                MassageController.getInstance().show("valid");
+            	orderBooks();
+                //MassageController.getInstance().show("valid");
                 return;
             }
 

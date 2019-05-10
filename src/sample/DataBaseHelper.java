@@ -1,5 +1,7 @@
 package sample;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
 
@@ -25,7 +27,7 @@ public class DataBaseHelper {
 
     public void openConnection() throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "ai", "2337");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
     }
 
 
@@ -269,7 +271,7 @@ public class DataBaseHelper {
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL update_user_info (\"" + olduserName + "\",\""+newusername+ "\",\"" +
-                    oldPass + "\",\"" + newPass +
+                   encryptWithSQLMD5(oldPass) + "\",\"" + encryptWithSQLMD5(newPass) +
                     "\",\"" + fn + "\",\"" +
                     ln + "\",\"" +
                   email + "\",\"" +
@@ -289,7 +291,7 @@ public class DataBaseHelper {
         try {
             openConnection();
             Statement stmt = con.createStatement();
-            CallableStatement st = con.prepareCall("{ ? = call check_login(\"" + usrName + "\",\"" + password + "\")}");
+            CallableStatement st = con.prepareCall("{ ? = call check_login(\"" + usrName + "\",\"" + encryptWithSQLMD5(password) + "\")}");
             int count = 0;
             st.registerOutParameter(1, Types.INTEGER);
             st.execute();
@@ -308,7 +310,7 @@ public class DataBaseHelper {
         try {
             openConnection();
             Statement stmt = con.createStatement();
-            stmt.executeQuery("CALL Signup (\"" + userName + "\",\"" + pass + "\",\"" + firstN + "\",\"" + lastN + "\",\"" + email +
+            stmt.executeQuery("CALL Signup (\"" + userName + "\",\"" + encryptWithSQLMD5(pass) + "\",\"" + firstN + "\",\"" + lastN + "\",\"" + email +
                     "\",\"" + address + "\",\"" + phone + "\");");
             con.close();
             return true;
@@ -318,23 +320,23 @@ public class DataBaseHelper {
         }
     }
 
-    public String buildSearchQuery(String title, String authorName, String publisherName, String category, Integer pubYear, Integer priceMin, Integer priceMax) {
-        if (title != null) {
-            title = "'" + title + "'";
-        }
-        if (authorName != null) {
-            authorName = "'" + authorName + "'";
-        }
-        if (publisherName != null) {
-            publisherName = "'" + publisherName + "'";
-        }
-        if (category != null) {
-            category = "'" + category + "'";
-        }
-        String query = "CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
-                pubYear + "," + priceMax + "," + priceMin + ");";
-        return query;
-
+    public String buildSearchQuery (String title, String authorName, String publisherName, String category, Integer pubYear, Integer priceMin, Integer priceMax){
+		if(title!=null){
+			title="'"+title+"'";
+		}
+		if(authorName!=null){
+			authorName="'"+authorName+"'";
+		}
+		if(publisherName!=null){
+			publisherName="'"+publisherName+"'";
+		}
+		if(category!=null){
+			category="'"+category+"'";
+		}
+    	String query="CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
+                pubYear + "," + priceMax + "," +priceMin + ");";
+    	return query;
+    	
     }
 
     public void orderBook(int isbn, int quantity, String username) {
@@ -344,6 +346,23 @@ public class DataBaseHelper {
         } catch (Exception e) {
             MassageController.getInstance().show(e.getMessage());
         }
+    }
+    
+    public String encryptWithSQLMD5(String pass){
+    String generatedPassword = "";
+    try {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(pass.getBytes());
+        byte[] bytes = md.digest();
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i< bytes.length ;i++){
+            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        generatedPassword = sb.toString();
+    }
+    catch (NoSuchAlgorithmException e){
+    	}
+	return generatedPassword;
     }
 
 }
