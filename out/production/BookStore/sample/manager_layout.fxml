@@ -5,20 +5,22 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ManagerController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ManagerController">
    <children>
       <Button fx:id="addBookBTN" layoutX="32.0" layoutY="21.0" mnemonicParsing="false" onAction="#STbook" prefHeight="35.0" prefWidth="238.0" text="add new book" />
       <Button fx:id="modifyBookBTN" layoutX="32.0" layoutY="65.0" mnemonicParsing="false" onAction="#STModBook" prefHeight="35.0" prefWidth="238.0" text="modify existing book" />
       <Button fx:id="placeOrderBTN" layoutX="33.0" layoutY="113.0" mnemonicParsing="false" onAction="#STplaceOrd" prefHeight="35.0" prefWidth="238.0" text="place orders" />
-      <Button fx:id="confirmOrderBTN" layoutX="33.0" layoutY="158.0" mnemonicParsing="false" onAction="#STconfOrd" prefHeight="35.0" prefWidth="238.0" text="conferm order" />
+      <Button fx:id="confirmOrderBTN" layoutX="33.0" layoutY="158.0" mnemonicParsing="false" onAction="#STconfOrd" prefHeight="35.0" prefWidth="238.0" text="confirm order" />
       <Button fx:id="promoteBTN" layoutX="33.0" layoutY="202.0" mnemonicParsing="false" onAction="#STpromote" prefHeight="35.0" prefWidth="238.0" text="promote user to manager" />
-      <Button fx:id="viewTotSales" layoutX="31.0" layoutY="343.0" mnemonicParsing="false" onAction="#totSalesPrevMonth" prefHeight="35.0" prefWidth="238.0" text="view total sales for he prev month" />
-      <Button fx:id="viewTop5Customers" layoutX="32.0" layoutY="388.0" mnemonicParsing="false" onAction="#top5CustomersIn3Monthes" prefHeight="35.0" prefWidth="238.0" text="top 5 customers in last three monthes" />
-      <Button fx:id="viewTop10SellingBooks" layoutX="31.0" layoutY="437.0" mnemonicParsing="false" onAction="#top10SellingBooksIn3Monthes" prefHeight="35.0" prefWidth="238.0" text="top 10 selling booksin last three monthes " />
+      <Button fx:id="viewTotSales" layoutX="13.0" layoutY="343.0" mnemonicParsing="false" onAction="#totSalesPrevMonth" prefHeight="35.0" prefWidth="270.0" text="view total sales for the prev month" />
+      <Button fx:id="viewTop5Customers" layoutX="13.0" layoutY="388.0" mnemonicParsing="false" onAction="#top5CustomersIn3Monthes" prefHeight="35.0" prefWidth="270.0" text="top 5 customers in last three monthes" />
+      <Button fx:id="viewTop10SellingBooks" layoutX="14.0" layoutY="437.0" mnemonicParsing="false" onAction="#top10SellingBooksIn3Monthes" prefHeight="35.0" prefWidth="270.0" text="top 10 selling books in last three monthes " />
       <Pane fx:id="addBookpane1" layoutX="327.0" layoutY="62.0" prefHeight="448.0" prefWidth="406.0" visible="false">
          <children>
             <TextField fx:id="addbooktitle" layoutX="203.0" layoutY="71.0" />
@@ -69,11 +71,17 @@
       </Pane>
       <Pane fx:id="confirmPane" layoutX="368.0" layoutY="89.0" prefHeight="330.0" prefWidth="311.0">
          <children>
-            <TextField fx:id="cOrderPubN" layoutX="138.0" layoutY="85.0" />
-            <TextField fx:id="cOrderISBN" layoutX="138.0" layoutY="165.0" />
-            <Label layoutX="31.0" layoutY="89.0" text="publisher name" />
-            <Label layoutX="59.0" layoutY="169.0" text="ISBN" />
-            <Button fx:id="cOrderConf" layoutX="121.0" layoutY="243.0" mnemonicParsing="false" onAction="#confirmOrder" text="CONFIRM" />
+            <Button fx:id="cOrderConf" layoutX="121.0" layoutY="291.0" mnemonicParsing="false" onAction="#confirmOrder" text="CONFIRM" />
+            <ScrollPane layoutY="-2.0" prefHeight="280.0" prefWidth="311.0">
+               <content>
+                  <TableView fx:id="publisherOrdersTable" prefHeight="278.0" prefWidth="309.0">
+                    <columns>
+                      <TableColumn fx:id="publisherOrdersIsbn" prefWidth="87.0" text="ISBN" />
+                      <TableColumn fx:id="publisherOrderPublisher" prefWidth="221.0" text="Publisher name" />
+                    </columns>
+                  </TableView>
+               </content>
+            </ScrollPane>
          </children>
       </Pane>
       <Pane fx:id="addpubPane" layoutX="345.0" layoutY="67.0" prefHeight="376.0" prefWidth="324.0" visible="false">

@@ -308,7 +308,7 @@ public class ManagerController {
     }
 
     @FXML
-    void STconfOrd(ActionEvent event) {
+    void STconfOrd(ActionEvent event) throws SQLException {
         show(confirmPane);
         ResultSet result = DataBaseHelper.getInstance().get_unconfirmed_orders();
         if (result == null)
@@ -317,9 +317,9 @@ public class ManagerController {
         try {
 
             while (result.next()) {
-                PublisherOrder book = new PublisherOrder(result.getInt(1), result.getString(2));
-                publisherOrdersTable.getItems().add(book);
-            }
+            	PublisherOrder book = new PublisherOrder(result.getInt(2), result.getString(1));
+               publisherOrdersTable.getItems().add(book);
+           }
 
         } catch (Exception e) {
             e.printStackTrace();

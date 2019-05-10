@@ -16,9 +16,9 @@ public class PublisherOrder {
         return publisherName;
     }
 
-    public PublisherOrder(int isbn, String publisherName) {
+    public PublisherOrder(int isbn, String i) {
 
         this.isbn = isbn;
-        this.publisherName = publisherName;
+        this.publisherName = i;
     }
 }

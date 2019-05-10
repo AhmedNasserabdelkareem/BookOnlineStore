@@ -1,9 +1,3 @@
-/*category*/
-insert into category values (1,'Science');
-insert into category values (2,'Art');
-insert into category values (3,'Religion');
-insert into category values (4,'History');
-insert into category values (5,'Geography');
 /*    publisher        */
 insert into publisher (PublisherID, Name) values (1, 'Kev Branigan');
 insert into publisher (PublisherID, Name) values (2, 'Kaia Tuison');
@@ -5415,3 +5409,9 @@ insert into users (userID, username, pasword, firstName, lastName, email, phonen
 insert into users (userID, username, pasword, firstName, lastName, email, phonenumber, shippingAddress, user_type) values (998, 'Fernandina Polglaze', 'JQAkhIapzNl', 'Fernandina', 'Polglaze', 'fpolglazerp@newsvine.com', '9417527174', '0 Westridge Lane', false);
 insert into users (userID, username, pasword, firstName, lastName, email, phonenumber, shippingAddress, user_type) values (999, 'Arman McTrustie', 'LC3bma', 'Arman', 'McTrustie', 'amctrustierq@theglobeandmail.com', '2099729188', '78173 Hayes Road', false);
 insert into users (userID, username, pasword, firstName, lastName, email, phonenumber, shippingAddress, user_type) values (1000, 'Allissa Bernardoni', 'xjgSA7', 'Allissa', 'Bernardoni', 'abernardonirr@over-blog.com', '1638619059', '36501 Delaware Pass', true);
+/*category*/
+insert into category values (1,'Science');
+insert into category values (2,'Art');
+insert into category values (3,'Religion');
+insert into category values (4,'History');
+insert into category values (5,'Geography');
