@@ -433,6 +433,9 @@ public class ManagerController {
 
         onlyLetters(orderPubName);
         onlyLetters(addbookpubname);
+        onlyLetters(cOrderPubN);
+        onlyLetters(addAuthName);
+        onlyLetters(addAUTHNAME);
 
         onlyNums(orderISBN);
         onlyNums(orderQuan);
@@ -441,6 +444,11 @@ public class ManagerController {
         onlyNums(addbookprice);
         onlyNums(addbookquant);
         onlyNums(addbookthres);
+        onlyNums(addAuthorTxt);
+        onlyNums(modifyISBN);
+        onlyNums(modifyQuantity);
+        onlyNums(addPhone);
+        onlyNums(cOrderISBN);
 
     }
 
