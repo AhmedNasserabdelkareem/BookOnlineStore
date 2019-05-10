@@ -249,10 +249,15 @@ closeConnection();
             openConnection();
             Statement stmt = con.createStatement();
             System.out.println("-------------"+title+" "+ authorName+" "+ publisherName+" "+ category+" "+pubYear+" "+priceMax+" "+priceMin);
+<<<<<<< HEAD
 //            stmt.executeQuery("CALL Search_for_book (\"" + title + "\",\"" + authorName + "\",\"" + publisherName + "\",\"" + category + "\"," +
 //                    pubYear + "," + priceMin + "," + priceMax + ");");
             stmt.executeQuery("CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
                     pubYear + "," + priceMin + "," + priceMax + ");");
+=======
+            
+            stmt.executeQuery(buildSearchQuery(title, authorName, publisherName, category, pubYear, priceMin, priceMax));
+>>>>>>> baaf1cdc86ab87b7f073025bfc17f71452ed1b4c
             ResultSet rs = stmt.getResultSet();
 
             return rs;
@@ -318,6 +323,25 @@ closeConnection();
             MassageController.getInstance().show(e.toString());
             return false;
         }
+    }
+    
+    public String buildSearchQuery (String title, String authorName, String publisherName, String category, Integer pubYear, Integer priceMin, Integer priceMax){
+		if(title!=null){
+			title="'"+title+"'";
+		}
+		if(authorName!=null){
+			authorName="'"+authorName+"'";
+		}
+		if(publisherName!=null){
+			publisherName="'"+publisherName+"'";
+		}
+		if(category!=null){
+			category="'"+category+"'";
+		}
+    	String query="CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
+                pubYear + "," + priceMax + "," +priceMin + ");";
+    	return query;
+    	
     }
 
 }
