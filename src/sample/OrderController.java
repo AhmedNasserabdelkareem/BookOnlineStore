@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.BookSearchResult;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class OrderController {
@@ -45,12 +46,25 @@ public class OrderController {
             long number = Long.valueOf(num);
             if ((sumOfDoubleEvenPlace(number, num.length()) +
                     sumOfOddPlace(number, num.length())) % 10 == 0) {
-                //TODO DB
+                orderBooks();
                 MassageController.getInstance().show("valid");
                 return;
             }
 
             MassageController.getInstance().show("Invalid Credit Card number");
+        }
+    }
+
+    private void orderBooks(){
+        try {
+            DataBaseHelper.getInstance().openConnection();
+            for (Iterator i = cart.iterator(); i.hasNext();){
+                BookSearchResult book = (BookSearchResult)i.next();
+                DataBaseHelper.getInstance().orderBook(book.getIsbn(), Integer.valueOf(book.getQuantity()), UserController.userName);
+            }
+            DataBaseHelper.getInstance().closeConnection();
+        } catch (Exception e) {
+            MassageController.getInstance().show(e.getMessage());
         }
     }
 

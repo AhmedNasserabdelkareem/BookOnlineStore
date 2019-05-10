@@ -18,12 +18,12 @@ public class DataBaseHelper {
     private DataBaseHelper() {
     }
 
-    public void closeConnection() throws Exception{
-            con.close();
+    public void closeConnection() throws Exception {
+        con.close();
 
     }
 
-    private void openConnection() throws Exception {
+    public void openConnection() throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
     }
@@ -69,10 +69,10 @@ public class DataBaseHelper {
     public boolean modifyBook(int isbn, int quan) {
         try {
 
-         openConnection();
-         Statement stmt = con.createStatement();
+            openConnection();
+            Statement stmt = con.createStatement();
             stmt.executeQuery("CALL modify_book_quantity(" + isbn + "," + quan + ");");
-closeConnection();
+            closeConnection();
         } catch (Exception e) {
             return false;
         }
@@ -84,11 +84,11 @@ closeConnection();
     public boolean placeOrder(int isbn, String name, int quan) {
         try {
 
-      openConnection();
-      Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+            openConnection();
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL place_book_order(\"" + name + "\"," + isbn + "," + quan + ");");
-closeConnection();
+            closeConnection();
         } catch (Exception e) {
             return false;
         }
@@ -100,10 +100,10 @@ closeConnection();
     public boolean confirmOrder(int isbn, String pname) {
         try {
 
-          openConnection();
-          Statement stmt = con.createStatement();
+            openConnection();
+            Statement stmt = con.createStatement();
             stmt.executeQuery("CALL confirm_order(\"" + pname + "\"," + isbn + ");");
-closeConnection();
+            closeConnection();
         } catch (Exception e) {
             return false;
         }
@@ -115,10 +115,10 @@ closeConnection();
     public boolean promote(String un) {
         try {
 
-        openConnection();
-        Statement stmt = con.createStatement();
+            openConnection();
+            Statement stmt = con.createStatement();
             stmt.executeQuery("CALL promote_user(\"" + un + "\");");
-closeConnection();
+            closeConnection();
         } catch (Exception e) {
             return false;
         }
@@ -130,14 +130,14 @@ closeConnection();
     public boolean addNewPublisher(String authName) {
         try {
 
-        openConnection();
-        Statement stmt = con.createStatement();
+            openConnection();
+            Statement stmt = con.createStatement();
             stmt.executeQuery("CALL Add_new_publishers(\"" + authName + "\");");
 
-closeConnection();
+            closeConnection();
         } catch (Exception e) {
             MassageController.getInstance().show("ERR");
-                e.printStackTrace();
+            e.printStackTrace();
             return false;
         }
 
@@ -150,10 +150,10 @@ closeConnection();
 
         try {
 
-         openConnection();
-         Statement stmt = con.createStatement();
+            openConnection();
+            Statement stmt = con.createStatement();
             stmt.executeQuery("CALL add_publisher_address(\"" + name + "\",\"" + address + "\");");
-closeConnection();
+            closeConnection();
         } catch (Exception e) {
             return false;
         }
@@ -165,10 +165,10 @@ closeConnection();
     public boolean addPhoneToAuth(String name, String phone) {
         try {
 
-        openConnection();
-        Statement stmt = con.createStatement();
+            openConnection();
+            Statement stmt = con.createStatement();
             stmt.executeQuery("CALL add_publisher_phone(\"" + name + "\",\"" + phone + "\");");
-closeConnection();
+            closeConnection();
         } catch (Exception e) {
             return false;
         }
@@ -180,8 +180,8 @@ closeConnection();
     public boolean addAuthor2(String name) {
         try {
 
-        openConnection();
-        Statement stmt = con.createStatement();
+            openConnection();
+            Statement stmt = con.createStatement();
             stmt.executeQuery("CALL Add_new_authors(\"" + name + "\");");
             closeConnection();
         } catch (Exception e) {
@@ -198,8 +198,8 @@ closeConnection();
     public ResultSet totalSalesPrevMonth() {
         try {
 
-           openConnection();
-           Statement stmt = con.createStatement();
+            openConnection();
+            Statement stmt = con.createStatement();
             stmt.executeQuery("CALL retreive_total_sales();");//TODO
             ResultSet rs = stmt.getResultSet();
 
@@ -231,7 +231,8 @@ closeConnection();
 
     public ResultSet top10salesInLastThreeMonthes() {
         try {
-          openConnection();Statement stmt = con.createStatement();
+            openConnection();
+            Statement stmt = con.createStatement();
             stmt.executeQuery("CALL retreive_top_sales();");//TODO
             ResultSet rs = stmt.getResultSet();
 
@@ -248,16 +249,9 @@ closeConnection();
 
             openConnection();
             Statement stmt = con.createStatement();
-            System.out.println("-------------"+title+" "+ authorName+" "+ publisherName+" "+ category+" "+pubYear+" "+priceMax+" "+priceMin);
-<<<<<<< HEAD
-//            stmt.executeQuery("CALL Search_for_book (\"" + title + "\",\"" + authorName + "\",\"" + publisherName + "\",\"" + category + "\"," +
-//                    pubYear + "," + priceMin + "," + priceMax + ");");
-            stmt.executeQuery("CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
-                    pubYear + "," + priceMin + "," + priceMax + ");");
-=======
-            
+            System.out.println("-------------" + title + " " + authorName + " " + publisherName + " " + category + " " + pubYear + " " + priceMax + " " + priceMin);
+
             stmt.executeQuery(buildSearchQuery(title, authorName, publisherName, category, pubYear, priceMin, priceMax));
->>>>>>> baaf1cdc86ab87b7f073025bfc17f71452ed1b4c
             ResultSet rs = stmt.getResultSet();
 
             return rs;
@@ -292,12 +286,12 @@ closeConnection();
         }
     }
 
-    public  int signin(String usrName , String password){
+    public int signin(String usrName, String password) {
 
         try {
             openConnection();
             Statement stmt = con.createStatement();
-            CallableStatement st = con.prepareCall("{ ? = call check_login(\""+usrName+"\",\""+password+"\")}");
+            CallableStatement st = con.prepareCall("{ ? = call check_login(\"" + usrName + "\",\"" + password + "\")}");
             int count = 0;
             st.registerOutParameter(1, Types.INTEGER);
             st.execute();
@@ -311,6 +305,7 @@ closeConnection();
         return -1;
 
     }
+
     public boolean signUp(String userName, String pass, String firstN, String lastN, String email, String phone, String address) {
         try {
             openConnection();
@@ -324,24 +319,33 @@ closeConnection();
             return false;
         }
     }
-    
-    public String buildSearchQuery (String title, String authorName, String publisherName, String category, Integer pubYear, Integer priceMin, Integer priceMax){
-		if(title!=null){
-			title="'"+title+"'";
-		}
-		if(authorName!=null){
-			authorName="'"+authorName+"'";
-		}
-		if(publisherName!=null){
-			publisherName="'"+publisherName+"'";
-		}
-		if(category!=null){
-			category="'"+category+"'";
-		}
-    	String query="CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
-                pubYear + "," + priceMax + "," +priceMin + ");";
-    	return query;
-    	
+
+    public String buildSearchQuery(String title, String authorName, String publisherName, String category, Integer pubYear, Integer priceMin, Integer priceMax) {
+        if (title != null) {
+            title = "'" + title + "'";
+        }
+        if (authorName != null) {
+            authorName = "'" + authorName + "'";
+        }
+        if (publisherName != null) {
+            publisherName = "'" + publisherName + "'";
+        }
+        if (category != null) {
+            category = "'" + category + "'";
+        }
+        String query = "CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
+                pubYear + "," + priceMax + "," + priceMin + ");";
+        return query;
+
+    }
+
+    public void orderBook(int isbn, int quantity, String username) {
+        try {
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL insert_order_history (" + isbn + "," + quantity + "\",\"" + username + "\");");
+        } catch (Exception e) {
+            MassageController.getInstance().show(e.toString());
+        }
     }
 
 }
