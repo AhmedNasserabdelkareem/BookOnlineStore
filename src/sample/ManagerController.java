@@ -204,12 +204,20 @@ public class ManagerController {
                 addAuthorLabelISBN.setText(String.valueOf(isbn));
                 lastAddedBookISBN = isbn;
                 show(addBookpane2);
+
+                MassageController.getInstance().show("Successfully added book");
+                pubyear.setText("");
+                addbookprice.setText("");
+                addbookquant.setText("");
+                addbookpubname.setText("");
+                addBookISBN.setText("");
+                addbooktitle.setText("");
+                addbookthres.setText("");
             }
         } catch (Exception e) {
             MassageController.getInstance().show("Not a valid number");
         }
 
-        MassageController.getInstance().show("Successfully added book");
     }
 
     @FXML
@@ -220,6 +228,8 @@ public class ManagerController {
             //TODO error
         } else {
             MassageController.getInstance().show("Successfully Confirmed");
+            cOrderISBN.setText("");
+            cOrderPubN.setText("");
         }
     }
 
@@ -412,6 +422,7 @@ public class ManagerController {
         if (!DataBaseHelper.getInstance().addAddressToAuth(authorNameToAdd, addAddress.getText())) {
             //TODO err
         } else {
+            MassageController.getInstance().show("Successfully added");
             addAddress.setText("another !");
         }
     }
@@ -421,6 +432,7 @@ public class ManagerController {
         if (!DataBaseHelper.getInstance().addPhoneToAuth(authorNameToAdd, addPhone.getText())) {
             //TODO err
         } else {
+            MassageController.getInstance().show("Successfully added");
             addPhone.setText("another !");
         }
     }
