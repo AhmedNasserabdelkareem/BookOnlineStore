@@ -73,6 +73,7 @@ public class ProfileController {
     }
 
     public void initialize() {
+        System.out.println("----"+UserController.userName);
         ResultSet rs = DataBaseHelper.getInstance().profileInfo(UserController.userName);
         try {
             prShippingAddress.setText(rs.getString(2));

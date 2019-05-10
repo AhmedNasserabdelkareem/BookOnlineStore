@@ -269,7 +269,6 @@ public class DataBaseHelper {
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL Retreive_user_info (\"" + userName + "\");");
-
             return stmt.getResultSet();
         } catch (Exception e) {
             MassageController.getInstance().show(e.toString());
