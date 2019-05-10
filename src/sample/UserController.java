@@ -273,10 +273,12 @@ public class UserController {
         if (!quantityTxt.getText().equals(""))
             quantity = Integer.valueOf(quantityTxt.getText());
 
-        if (quantity > storeQuantity)
+        if (quantity > storeQuantity) {
             MassageController.getInstance().show("Maximum Quantity is + " + selectedItem.getQuantity());
-
+            return;
+        }
         int index = isBookInCart(selectedItem.getIsbn());
+
         if (index == -1) {//notFound
             BookSearchResult book = new BookSearchResult(selectedItem.getIsbn(), selectedItem.getBookTitle(), selectedItem.getYear(),
                     String.valueOf(quantity * Integer.valueOf(selectedItem.getPrice())), String.valueOf(quantity));
