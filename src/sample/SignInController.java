@@ -55,8 +55,9 @@ public class SignInController {
         }
 
         UserController userController = new UserController();
-        userController.show(manager);
+        UserController.manager = manager;
         UserController.userName = usrNameTxt.getText();
+        userController.show();
         signInStage.close();
     }
 

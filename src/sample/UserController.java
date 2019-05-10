@@ -121,6 +121,7 @@ public class UserController {
     private LinkedList<BookSearchResult> cart = new LinkedList<>();
 
     public static String userName;
+    public static boolean manager;
 
     @FXML
     void EditProfile(ActionEvent event) {
@@ -172,25 +173,28 @@ public class UserController {
         Integer date = null, priceMin = null, priceMax = null;
         String bookTitle = null, author = null, publisher = null, cat = null;
         try {
-            date = Integer.valueOf(publishDate.getText());
-            priceMin = Integer.valueOf(priceMinTxt.getText());
-            priceMax = Integer.valueOf(priceMaxTxt.getText());
+            if (filterDateCheck.isSelected())
+                date = Integer.valueOf(publishDate.getText());
+            if (filterPriceCheck.isSelected()) {
+                priceMin = Integer.valueOf(priceMinTxt.getText());
+                priceMax = Integer.valueOf(priceMaxTxt.getText());
+            }
         } catch (NumberFormatException e) {
         }
 
-        if (!bookTitleTxt.getText().equals(""))
+        if (filterBookTitleCheck.isSelected() && !bookTitleTxt.getText().equals(""))
             bookTitle = bookTitleTxt.getText();
 
         try {
-            if (!categoriesMenu.getSelectionModel().getSelectedItem().equals(""))
+            if (filterCategoryCheck.isSelected())
                 cat = categoriesMenu.getSelectionModel().getSelectedItem();
         } catch (NullPointerException e) {
         }
 
-        if (!authorTxt.getText().equals(""))
+        if (filterAuthorCheck.isSelected() && !authorTxt.getText().equals(""))
             author = authorTxt.getText();
 
-        if (!publisherTxt.getText().equals(""))
+        if (filterPublisherCheck.isSelected() && !publisherTxt.getText().equals(""))
             publisher = publisherTxt.getText();
 
         ResultSet rs = DataBaseHelper.getInstance().searchBook(bookTitle, author, publisher,
@@ -262,8 +266,8 @@ public class UserController {
 
         //calculate total money
         int total = 0;
-        for (Iterator i = cart.iterator(); i.hasNext();)
-            total += Integer.valueOf(((BookSearchResult)i.next()).getPrice());
+        for (Iterator i = cart.iterator(); i.hasNext(); )
+            total += Integer.valueOf(((BookSearchResult) i.next()).getPrice());
         totalMoney.setText(String.valueOf(total));
     }
 
@@ -287,6 +291,9 @@ public class UserController {
         categoriesMenu.getItems().addAll("Science", "Art", "Religion", "History", "Geography");
         categoriesMenu.getSelectionModel().select("Science");
 
+        if (!manager)
+            manageBtn.setVisible(false);
+
     }
 
     @FXML
@@ -302,10 +309,7 @@ public class UserController {
         });
     }
 
-    public void show(boolean manager) {
-        if (!manager)
-            manageBtn.setVisible(false);
-
+    public void show() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("user_layout.fxml"));
             Parent root1 = fxmlLoader.load();

@@ -68,8 +68,13 @@ public class SignUpController {
             return;
         }
 
-        DataBaseHelper.getInstance().signUp(SUUserName.getText(), USPass.getText(), SUFirstName.getText(),
-                SUSecondName.getText(), SUEmail.getText(), PhoneAdd.getText(), SUSHAdd.getText());
+        if (DataBaseHelper.getInstance().signUp(SUUserName.getText(), USPass.getText(), SUFirstName.getText(),
+                SUSecondName.getText(), SUEmail.getText(), PhoneAdd.getText(), SUSHAdd.getText())){
+            SignInController signInController = new SignInController();
+            signInController.show();
+            MassageController.getInstance().show("Signed up successfully");
+            signUpStage.close();
+        }
     }
 
     public void initialize(){

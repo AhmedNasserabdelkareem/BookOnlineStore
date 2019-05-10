@@ -25,7 +25,7 @@ public class DataBaseHelper {
 
     private void openConnection() throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "ai", "2337");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
     }
 
     public boolean addbook(int isbn, String tilte, String pubname, int pubyear, int price, int quan, int threshold, String cat) {
@@ -303,15 +303,17 @@ closeConnection();
         return -1;
 
     }
-    public void signUp(String userName, String pass, String firstN, String lastN, String email, String phone, String address) {
+    public boolean signUp(String userName, String pass, String firstN, String lastN, String email, String phone, String address) {
         try {
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL Signup (\"" + userName + "\",\"" + pass + "\",\"" + firstN + "\",\"" + lastN + "\",\"" + email +
                     "\",\"" + address + "\",\"" + phone + "\");");
             con.close();
+            return true;
         } catch (Exception e) {
             MassageController.getInstance().show(e.toString());
+            return false;
         }
     }
 

@@ -19,7 +19,7 @@
             <Font name="System Bold" size="12.0" />
          </font></Button>
       <TextField fx:id="bookTitleTxt" disable="true" layoutX="48.0" layoutY="161.0" prefHeight="25.0" prefWidth="256.0" />
-      <ComboBox fx:id="categoriesMenu" disable="true" editable="true" layoutX="48.0" layoutY="126.0" prefWidth="256.0" promptText="All Categories" />
+      <ComboBox fx:id="categoriesMenu" disable="true" layoutX="48.0" layoutY="126.0" prefWidth="256.0" promptText="All Categories" />
       <TextField fx:id="authorTxt" disable="true" layoutX="48.0" layoutY="201.0" prefHeight="25.0" prefWidth="256.0" />
       <TextField fx:id="publisherTxt" disable="true" layoutX="48.0" layoutY="242.0" prefHeight="25.0" prefWidth="256.0" />
       <CheckBox fx:id="filterBookTitleCheck" layoutX="323.0" layoutY="165.0" mnemonicParsing="false" onAction="#filterBookTitle" text="book title" />
