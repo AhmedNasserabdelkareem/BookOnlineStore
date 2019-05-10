@@ -294,6 +294,10 @@ public class UserController {
         } else {
             BookSearchResult inCart = cart.get(index);
             quantity += Integer.valueOf(inCart.getQuantity());
+            if (quantity > storeQuantity) {
+                MassageController.getInstance().show("Maximum Quantity is + " + selectedItem.getQuantity());
+                return;
+            }
             inCart.setQuantity(String.valueOf(quantity));
             inCart.setPrice(String.valueOf(quantity * Integer.valueOf(selectedItem.getPrice())));
             cartTable.refresh();
@@ -328,17 +332,6 @@ public class UserController {
 
         if (!manager)
             manageBtn.setVisible(false);
-
-        userStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                if (currentMC != null)
-                    try {
-                        currentMC.getStage().close();
-                    } catch (Exception e) {//stage not opened}
-                    }
-            }
-        });
     }
 
     @FXML
@@ -361,6 +354,17 @@ public class UserController {
             userStage = new Stage();
             userStage.setScene(new Scene(root1));
             userStage.show();
+
+            userStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    if (currentMC != null)
+                        try {
+                            currentMC.getStage().close();
+                        } catch (Exception e) {//stage not opened}
+                        }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
