@@ -270,7 +270,7 @@ public class DataBaseHelper {
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL update_user_info (\"" + olduserName + "\",\""+newusername+ "\",\"" +
-                    oldPass + "\",\"" + newPass +
+                   encryptWithSQLMD5(oldPass) + "\",\"" + encryptWithSQLMD5(newPass) +
                     "\",\"" + fn + "\",\"" +
                     ln + "\",\"" +
                   email + "\",\"" +
@@ -290,7 +290,7 @@ public class DataBaseHelper {
         try {
             openConnection();
             Statement stmt = con.createStatement();
-            CallableStatement st = con.prepareCall("{ ? = call check_login(\"" + usrName + "\",\"" + password + "\")}");
+            CallableStatement st = con.prepareCall("{ ? = call check_login(\"" + usrName + "\",\"" + encryptWithSQLMD5(password) + "\")}");
             int count = 0;
             st.registerOutParameter(1, Types.INTEGER);
             st.execute();
@@ -309,7 +309,7 @@ public class DataBaseHelper {
         try {
             openConnection();
             Statement stmt = con.createStatement();
-            stmt.executeQuery("CALL Signup (\"" + userName + "\",\"" + pass + "\",\"" + firstN + "\",\"" + lastN + "\",\"" + email +
+            stmt.executeQuery("CALL Signup (\"" + userName + "\",\"" + encryptWithSQLMD5(pass) + "\",\"" + firstN + "\",\"" + lastN + "\",\"" + email +
                     "\",\"" + address + "\",\"" + phone + "\");");
             con.close();
             return true;
