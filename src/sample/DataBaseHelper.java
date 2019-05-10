@@ -255,7 +255,6 @@ public class DataBaseHelper {
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL Retreive_user_info (\"" + userName + "\");");
-
             return stmt.getResultSet();
         } catch (Exception e) {
             MassageController.getInstance().show(e.getMessage());
@@ -263,11 +262,17 @@ public class DataBaseHelper {
         return null;
     }
 
-    public void updateUserInfo(String userName, String oldPass, String newPass, String address, String phone) {
+    public void updateUserInfo(String olduserName,String newusername, String oldPass, String newPass,
+                               String fn , String ln , String email , String address, String phone) {
         try {
             openConnection();
             Statement stmt = con.createStatement();
-            stmt.executeQuery("CALL update_user_info (\"" + userName + "\",\"" + oldPass + "\",\"" + newPass + "\",\"" + address + "\",\"" +
+            stmt.executeQuery("CALL update_user_info (\"" + olduserName + "\",\""+newusername+ "\",\"" +
+                    oldPass + "\",\"" + newPass +
+                    "\",\"" + fn + "\",\"" +
+                    ln + "\",\"" +
+                  email + "\",\"" +
+                  address + "\",\"" +
                     phone + "\");");
             con.close();
         } catch (Exception e) {

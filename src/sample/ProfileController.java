@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -23,6 +24,8 @@ public class ProfileController {
     private Button SaveBtn;
 
     @FXML
+    private Label typelbl;
+    @FXML
     private PasswordField prOldPass;
 
     @FXML
@@ -31,6 +34,14 @@ public class ProfileController {
     @FXML
     private TextField prShippingAddress;
 
+    @FXML
+    private TextField usernametxt;
+    @FXML
+    private TextField firstnametxt;
+    @FXML
+    private TextField lastnametxt;
+    @FXML
+    private TextField emailtxt;
     @FXML
     private TextField prPhoneNumber;
 
@@ -73,21 +84,34 @@ public class ProfileController {
             return;
         }
 
-        DataBaseHelper.getInstance().updateUserInfo(UserController.userName, prOldPass.getText(),
-                prNewPass.getText(), prShippingAddress.getText(), prPhoneNumber.getText());
+        DataBaseHelper.getInstance().updateUserInfo(
+                UserController.userName,usernametxt.getText()
+                , prOldPass.getText(), prNewPass.getText(),
+                firstnametxt.getText(),lastnametxt.getText(),emailtxt.getText(), prShippingAddress.getText(), prPhoneNumber.getText());
 
         MassageController.getInstance().show("Data updated successfully");
     }
 
     public void initialize() {
+        System.out.println("----"+UserController.userName);
         ResultSet rs = DataBaseHelper.getInstance().profileInfo(UserController.userName);
+
         try {
-            prShippingAddress.setText(rs.getString(2));
-            prPhoneNumber.setText(rs.getString(3));
+            rs.next();
+            if(rs.getBoolean(9)){
+                typelbl.setText("user type : Manager");
+            }else {
+                typelbl.setText("user type : normal user");
+            }
+            prShippingAddress.setText(rs.getString(8));
+            prPhoneNumber.setText(rs.getString(7));
+            emailtxt.setText(rs.getString(6));
+            firstnametxt.setText(rs.getString(4));
+            lastnametxt.setText(rs.getString(5));
+            usernametxt.setText(rs.getString(2));
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         prPhoneNumber.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
