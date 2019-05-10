@@ -164,11 +164,18 @@ public class UserController {
 
     @FXML
     void order(ActionEvent event) {
-
+        if (cart.isEmpty())
+            MassageController.getInstance().show("Please add some books to cart first");
+        else {
+            OrderController orderController = new OrderController();
+            OrderController.cart = cart;
+            orderController.show();
+        }
     }
 
     @FXML
     void search(ActionEvent event) {
+        searchResultTable.getItems().clear();
 
         Integer date = null, priceMin = null, priceMax = null;
         String bookTitle = null, author = null, publisher = null, cat = null;
@@ -189,9 +196,6 @@ public class UserController {
         try {
             if (filterCategoryCheck.isSelected())
                 cat = categoriesMenu.getSelectionModel().getSelectedItem();
-            if(!filterCategoryCheck.isSelected()){
-                cat="null";
-            }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -213,6 +217,7 @@ public class UserController {
     }
 
     private void makeSearchTable(ResultSet rs) {
+    	int count=0;
         try {
 
             while (rs.next()) {
@@ -220,7 +225,9 @@ public class UserController {
                         rs.getString(5), rs.getString(8));
 
                 searchResultTable.getItems().add(book);
+                count++;
             }
+            System.out.println("The result rows count : "+count);
 
         } catch (Exception e) {
             e.printStackTrace();
