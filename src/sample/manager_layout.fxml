@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
@@ -8,7 +9,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ManagerController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ManagerController">
    <children>
       <Button fx:id="addBookBTN" layoutX="32.0" layoutY="21.0" mnemonicParsing="false" onAction="#STbook" prefHeight="35.0" prefWidth="238.0" text="add new book" />
       <Button fx:id="modifyBookBTN" layoutX="32.0" layoutY="65.0" mnemonicParsing="false" onAction="#STModBook" prefHeight="35.0" prefWidth="238.0" text="modify existing book" />
@@ -23,7 +24,6 @@
             <TextField fx:id="addbooktitle" layoutX="203.0" layoutY="71.0" />
             <TextField fx:id="addbookpubname" layoutX="203.0" layoutY="115.0" />
             <TextField fx:id="addbookprice" layoutX="203.0" layoutY="206.0" />
-            <TextField fx:id="addbookcat" layoutX="203.0" layoutY="255.0" />
             <TextField fx:id="addbookquant" layoutX="203.0" layoutY="297.0" />
             <TextField fx:id="addbookthres" layoutX="203.0" layoutY="346.0" />
             <TextField fx:id="addBookISBN" layoutX="203.0" layoutY="30.0" />
@@ -37,6 +37,7 @@
             <Label layoutX="75.0" layoutY="350.0" text="threshold" />
             <TextField fx:id="pubyear" layoutX="203.0" layoutY="158.0" />
             <Label layoutX="59.0" layoutY="162.0" text="publishing year" />
+            <ComboBox fx:id="addbookcat" layoutX="202.0" layoutY="255.0" prefWidth="150.0" />
          </children>
       </Pane>
       <Separator layoutX="292.0" layoutY="78.0" orientation="VERTICAL" prefHeight="364.0" prefWidth="7.0" />
