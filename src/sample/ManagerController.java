@@ -230,6 +230,7 @@ public class ManagerController {
 
     @FXML
     void placeOrder(ActionEvent event) {
+        System.out.println("------------------>"+orderISBN.getText());
         int isbn = Integer.valueOf(orderISBN.getText());
         String name = orderPubName.getText();
         int quan = Integer.valueOf(orderQuan.getText());

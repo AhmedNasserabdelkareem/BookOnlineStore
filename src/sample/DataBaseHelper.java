@@ -25,7 +25,7 @@ public class DataBaseHelper {
 
     public void openConnection() throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "ai", "2337");
     }
 
     public boolean addbook(int isbn, String tilte, String pubname, int pubyear, int price, int quan, int threshold, String cat) {
@@ -84,12 +84,14 @@ public class DataBaseHelper {
     public boolean placeOrder(int isbn, String name, int quan) {
         try {
 
-            openConnection();
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+      openConnection();
+      Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "ai", "2337");
+
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL place_book_order(\"" + name + "\"," + isbn + "," + quan + ");");
             closeConnection();
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
 
@@ -105,6 +107,7 @@ public class DataBaseHelper {
             stmt.executeQuery("CALL confirm_order(\"" + pname + "\"," + isbn + ");");
             closeConnection();
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
 
@@ -300,6 +303,7 @@ public class DataBaseHelper {
             con.close();
             return count;
         } catch (Exception e) {
+            e.printStackTrace();
             MassageController.getInstance().show(e.toString());
         }
         return -1;

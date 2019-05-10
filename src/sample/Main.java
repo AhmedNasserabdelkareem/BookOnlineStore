@@ -13,18 +13,15 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 //
-<<<<<<< HEAD
 //        SignUpController signUpController = new SignUpController();
 //        signUpController.show();
 
 //        UserController userController = new UserController();
 //        userController.show(true);
-=======
      //   SignUpController signUpController = new SignUpController();
        // signUpController.show();
-        UserController userController = new UserController();
-        userController.show();
->>>>>>> baaf1cdc86ab87b7f073025bfc17f71452ed1b4c
+//        UserController userController = new UserController();
+//        userController.show();
 
         SignInController signInController = new SignInController();
         signInController.show();
