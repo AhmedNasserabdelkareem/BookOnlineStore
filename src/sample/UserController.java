@@ -284,7 +284,7 @@ public class UserController {
         int total = 0;
         for (Iterator i = cart.iterator(); i.hasNext(); )
             total += Integer.valueOf(((BookSearchResult) i.next()).getPrice());
-        totalMoney.setText(String.valueOf(total));
+        totalMoney.setText(String.valueOf(total) + "$");
     }
 
     public void initialize() {
@@ -345,7 +345,7 @@ public class UserController {
             if (((BookSearchResult) iterator.next()).getIsbn() == isbn)
                 return i;
         }
-        return i;
+        return -1;
     }
 
 }
