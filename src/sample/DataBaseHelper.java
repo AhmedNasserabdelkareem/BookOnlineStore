@@ -270,7 +270,7 @@ public class DataBaseHelper {
         try {
             openConnection();
             Statement stmt = con.createStatement();
-            stmt.executeQuery("CALL Retreive_unconfimed_orders ();");
+            stmt.executeQuery("CALL Retreive_unconfirmed_orders ();");
             return stmt.getResultSet();
         } catch (Exception e) {
             MassageController.getInstance().show(e.getMessage());
