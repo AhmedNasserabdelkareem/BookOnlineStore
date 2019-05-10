@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,6 +63,11 @@ public class ProfileController {
     @FXML
     void save(ActionEvent event) {
 
+        if (prNewPass.getText().length() < 8){
+            MassageController.getInstance().show("Password must be at least 8 digits");
+            return;
+        }
+
         if (!prConfirmPass.getText().equals(prNewPass.getText())) {
             MassageController.getInstance().show("Password mismatch");
             return;
@@ -80,6 +87,16 @@ public class ProfileController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        prPhoneNumber.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    prPhoneNumber.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
 }
