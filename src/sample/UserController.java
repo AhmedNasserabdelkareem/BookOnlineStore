@@ -4,6 +4,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.BookSearchResult;
 
 import java.sql.ResultSet;
@@ -130,14 +132,18 @@ public class UserController {
     }
 
     @FXML
-    void logout(){
+    void logout() {
 
         SignInController signInController = new SignInController();
         signInController.show();
         userStage.close();
-        if(currentMC!=null)
-        currentMC.getStage().close();
+        if (currentMC != null)
+            try {
+                currentMC.getStage().close();
+            } catch (Exception e) {//stage not opened
+            }
     }
+
     @FXML
     void filterAuthor(ActionEvent event) {
         authorTxt.setDisable(!filterAuthorCheck.isSelected());
@@ -220,13 +226,13 @@ public class UserController {
         makeSearchTable(rs);
         try {
             DataBaseHelper.getInstance().closeConnection();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
 
     private void makeSearchTable(ResultSet rs) {
-    	int count=0;
+        int count = 0;
         try {
 
             while (rs.next()) {
@@ -236,7 +242,7 @@ public class UserController {
                 searchResultTable.getItems().add(book);
                 count++;
             }
-            System.out.println("The result rows count : "+count);
+            System.out.println("The result rows count : " + count);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -244,6 +250,7 @@ public class UserController {
     }
 
     private ManagerController currentMC;
+
     @FXML
     void manage() {
         currentMC = new ManagerController();
@@ -320,6 +327,16 @@ public class UserController {
         if (!manager)
             manageBtn.setVisible(false);
 
+        userStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                if (currentMC != null)
+                    try {
+                        currentMC.getStage().close();
+                    } catch (Exception e) {//stage not opened}
+                    }
+            }
+        });
     }
 
     @FXML
