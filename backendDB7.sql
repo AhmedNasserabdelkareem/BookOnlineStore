@@ -1,3 +1,647 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema bookstore
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema bookstore
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `bookstore` DEFAULT CHARACTER SET utf8 ;
+USE `bookstore` ;
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`authors`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bookstore`.`authors` (
+  `authorId` INT(11) NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`authorId`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 601
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`category`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bookstore`.`category` (
+  `categoryID` INT(11) NOT NULL,
+  `Name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`categoryID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`publisher`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bookstore`.`publisher` (
+  `PublisherID` INT(11) NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`PublisherID`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 601
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`book`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bookstore`.`book` (
+  `ISBN` INT(11) NOT NULL,
+  `Title` VARCHAR(200) NOT NULL,
+  `PubID` INT(11) NOT NULL,
+  `PublishYear` INT(11) NOT NULL,
+  `price` INT(11) NULL DEFAULT '0',
+  `categoryID` INT(11) NOT NULL,
+  `threshold` INT(11) NOT NULL,
+  `quantity` INT(11) NULL DEFAULT '0',
+  PRIMARY KEY (`ISBN`),
+  INDEX `categoryId_idx` (`categoryID` ASC) VISIBLE,
+  INDEX `publisherfk2_idx` (`PubID` ASC) VISIBLE,
+  CONSTRAINT `categoryId`
+    FOREIGN KEY (`categoryID`)
+    REFERENCES `bookstore`.`category` (`categoryID`),
+  CONSTRAINT `publisherfk2`
+    FOREIGN KEY (`PubID`)
+    REFERENCES `bookstore`.`publisher` (`PublisherID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`book_authors`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bookstore`.`book_authors` (
+  `ISBN` INT(11) NOT NULL,
+  `AuthorID` INT(11) NOT NULL,
+  PRIMARY KEY (`ISBN`, `AuthorID`),
+  INDEX `authorName_idx` (`AuthorID` ASC) VISIBLE,
+  CONSTRAINT `BookToAuthor`
+    FOREIGN KEY (`ISBN`)
+    REFERENCES `bookstore`.`book` (`ISBN`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`ordertable`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bookstore`.`ordertable` (
+  `OrderID` INT(11) NOT NULL AUTO_INCREMENT,
+  `PublisherId` INT(11) NOT NULL,
+  `ISBN` INT(11) NOT NULL,
+  `QUANTITY` INT(11) NULL DEFAULT NULL,
+  `confirmed` TINYINT(4) NULL DEFAULT NULL,
+  PRIMARY KEY (`OrderID`, `PublisherId`, `ISBN`),
+  INDEX `ISBNinOrders` (`ISBN` ASC) VISIBLE,
+  INDEX `PublisherId_idx` (`PublisherId` ASC) VISIBLE,
+  CONSTRAINT `ISBNinOrders`
+    FOREIGN KEY (`ISBN`)
+    REFERENCES `bookstore`.`book` (`ISBN`),
+  CONSTRAINT `PublisherIdfk`
+    FOREIGN KEY (`PublisherId`)
+    REFERENCES `bookstore`.`publisher` (`PublisherID`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 14
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`publisheraddresses`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bookstore`.`publisheraddresses` (
+  `pubId` INT(11) NOT NULL,
+  `address` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`pubId`, `address`),
+  CONSTRAINT `fk12`
+    FOREIGN KEY (`pubId`)
+    REFERENCES `bookstore`.`publisher` (`PublisherID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`publishernumbers`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bookstore`.`publishernumbers` (
+  `PubID` INT(11) NOT NULL,
+  `number` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`PubID`, `number`),
+  CONSTRAINT `fk13`
+    FOREIGN KEY (`PubID`)
+    REFERENCES `bookstore`.`publisher` (`PublisherID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`users`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bookstore`.`users` (
+  `userID` INT(11) NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NOT NULL,
+  `pasword` VARCHAR(100) NOT NULL,
+  `firstName` VARCHAR(45) NOT NULL,
+  `lastName` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `phonenumber` VARCHAR(45) NOT NULL,
+  `shippingAddress` VARCHAR(100) NOT NULL,
+  `user_type` TINYINT(4) NOT NULL,
+  PRIMARY KEY (`userID`, `email`, `username`),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 1003
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`topsales`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bookstore`.`topsales` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `ISBN` INT(11) NULL DEFAULT NULL,
+  `quantity` INT(11) NULL DEFAULT NULL,
+  `userID` INT(11) NULL DEFAULT NULL,
+  `shippingMonth` DATE NULL DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  INDEX `BOOK_idx` (`ISBN` ASC) VISIBLE,
+  INDEX `USER_idx` (`userID` ASC) VISIBLE,
+  CONSTRAINT `BOOK`
+    FOREIGN KEY (`ISBN`)
+    REFERENCES `bookstore`.`book` (`ISBN`),
+  CONSTRAINT `USER`
+    FOREIGN KEY (`userID`)
+    REFERENCES `bookstore`.`users` (`userID`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 456
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+USE `bookstore` ;
+
+-- -----------------------------------------------------
+-- procedure Add_book_authors
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Add_book_authors`(In authorName varchar(45), in ISBN int)
+BEGIN
+set @authorid = (select authorId from authors where authors.Name = authorName);
+insert into book_authors values (ISBN,authorsID);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure Add_new_authors
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Add_new_authors`(in authorname varchar(45))
+BEGIN
+insert into authors (Name) values (authorname);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure Add_new_book
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Add_new_book`(in ISBN int,in title varchar(200) ,in publishername varchar(45),in pubYear int ,in price int,in threshold int,in quantity int,in bookCategory varchar(45))
+BEGIN
+select category.categoryID into @ctid from category where category.Name = bookCategory;
+select PublisherID into @pubid from publisher where publisher.Name = publishername;
+insert into book values ( ISBN,title,@pubid,pubYear,price,@ctid,threshold,quantity);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure Add_new_publishers
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Add_new_publishers`(in pubName varchar(45))
+BEGIN
+insert into publisher (Name) values (pubName);
+
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure Retreive_user_info
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Retreive_user_info`(in usrName varchar(45))
+BEGIN
+select * from users  where users.username = usrName;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure Search_for_book
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_for_book`( IN booktitle varchar(200), IN authorname varchar(45), IN publishername varchar(45), IN categoryy varchar(45), In pubYear int , In priceMax int , In priceMin int)
+BEGIN
+
+ SELECT * FROM book
+  WHERE 
+  (booktitle is null or book.Title like CONCAT('%',booktitle,'%'))
+  and(publishername is null or book.PubID in (
+  SELECT publisher.PublisherID from publisher where (
+  publishername is null or publisher.Name like CONCAT('%',publishername,'%')
+  )
+  ) 
+  )
+  and (
+  categoryy is null or book.categoryID in (
+  SELECT category.categoryID from category where (
+  category.Name like CONCAT('%',categoryy,'%')
+  )))
+  and (
+  authorname is null or book.ISBN in (
+  select book_authors.ISBN from book_authors where book_authors.AuthorID in (
+  select authors.authorId from authors where (
+  authors.Name like CONCAT('%',authorname,'%')))))
+  and (
+  pubYear is null or book.PublishYear between (pubYear-1) and (pubYear+1))
+  and (priceMax is null or priceMin is null or book.price between (priceMin) and (priceMax)) ;
+  /*select if(booktitle is null,'trueeee','faaaaaaaalse') union all
+   select if(publishername is null,'trueeee','faaaaaaaalse') union all
+  select if(categoryy is null,'trueeee','faaaaaaaalse') union all
+  select if(authorname is null,'trueeee','faaaaaaaalse') union all
+  select if(pubYear is null,'trueeee','faaaaaaaalse') union all
+  select if(priceMax is null,'trueeee','faaaaaaaalse') ;*/
+
+ -- select * from book where (booktitle is null or book.Title like CONCAT('%',booktitle,'%')) ;
+ -- select * from book where (publishername is null or book.PubID in (SELECT publisher.PublisherID from publisher where (publishername is null or publisher.Name like CONCAT('%',publishername,'%')))) ;
+
+-- select * from book where (categoryy is null or book.categoryID in (SELECT category.categoryID from category where ( category.Name like CONCAT('%',categoryy,'%'))));
+--  select * from book where (authorname is null or book.ISBN in (select book_authors.ISBN from book_authors where book_authors.AuthorID in (select authors.authorId from authors where (authors.Name like CONCAT('%',authorname,'%')))  )  );
+
+ -- select * from book where (pubYear is null or book.PublishYear between (pubYear-1) and (pubYear+1));
+  -- select * from book where (priceMax is null or priceMin is null or book.price between (priceMin) and (priceMax)) ;
+  /*signal sqlstate '45'faaaaaaaalse''faaaaaaaalse'5' set message_text = @idk; 
+*/
+
+end$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure Signup
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Signup`(in usrName varchar(45),
+in usrpass varchar(100),in usrFirstName varchar(45),in usrLastName varchar(45),
+in usrEmail varchar(45),in usrAddress varchar(100),in usrPhone varchar(45))
+BEGIN
+insert into users (username,pasword,firstName,lastName,email,phonenumber,user_type,users.shippingAddress) values 
+(usrName,usrpass,usrFirstName,usrLastName,usrEmail,usrPhone,false,usrAddress);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure add_publisher_address
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`ai`@`%` PROCEDURE `add_publisher_address`(in pubName varchar(45),in pubAddress varchar(100))
+BEGIN
+ set @pubID = (select PublisherID from publisher where publisher.Name =pubName);
+insert into publisheraddresses values (@pubID,pubAddress);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure add_publisher_phone
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`ai`@`%` PROCEDURE `add_publisher_phone`(in pubName varchar(45),in pubPhone varchar(45)
+)
+BEGIN
+ set @pubID = (select PublisherID from publisher where publisher.Name =pubName);
+
+insert into publishernumbers values (@pubID,pubPhone);
+
+
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- function check_login
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `check_login`(userName varchar(45),pass varchar(45)) RETURNS int(11)
+    DETERMINISTIC
+BEGIN
+DECLARE login_status int DEFAULT 0;
+
+ select users.userID,users.pasword,users.user_type into @userid,@userpass,@typeu from users where users.username = userName;
+   if( @userid =null)then
+   return 0;/*no user*/
+   elseif (pass=@userpass and @typeu=1) then  
+   return 2;/*crct manager*/
+   elseif(pass=@userpass and @typeu =0 ) then
+   return 3;/*crct user*/
+   else
+   return 1;/*wrng pass*/
+   end if;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure confirm_order
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `confirm_order`(in pubName varchar(45), in bookID int)
+BEGIN
+select PublisherID into @pubid from publisher where publisher.Name = pubName;
+update ordertable set confirmed=true where (ordertable.PublisherId=@pubid) and (ordertable.ISBN=bookID) and ordertable.confirmed=false
+ORDER BY OrderID asc
+LIMIT 1;
+
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure insert_order_history
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_order_history`(in bookID int , in q int , in userName varchar(45))
+BEGIN
+set @userid =(select userID from users where users.username=userName);
+insert into topsales (ISBN,quantity,userID,shippingMonth) values (bookID,q,@userid,current_date());
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure modify_book_quantity
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `modify_book_quantity`(in id int , in q int)
+BEGIN
+update book set book.quantity=q where book.ISBN=id;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure place_book_order
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `place_book_order`(in pubName varchar(45),in bookId int , in q int)
+BEGIN
+select PublisherID into @pubid from publisher where publisher.Name = pubName;
+insert into ordertable (PublisherId,ISBN,QUANTITY,confirmed) values (@pubid,bookId,q,false);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure promote_user
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `promote_user`(in usrName varchar(45))
+BEGIN
+if exists (select users.username from users where users.username=usrName) then
+update users set users.user_type = true where users.username=usrName;
+else
+signal sqlstate '45010' set message_text = 'username is not found';
+end if;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure retreive_top_customers
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `retreive_top_customers`()
+BEGIN
+select * from (users inner  join (select userID,sum(quantity) from topsales where month(topsales.shippingMonth)!=MONTH(CURRENT_DATE) group by (userID) order by sum(quantity) desc limit 5) as tab1 on tab1.userID=users.userID) ;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure retreive_top_sales
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `retreive_top_sales`()
+BEGIN
+select * from (book inner  join (select ISBN,sum(quantity) from topsales where month(topsales.shippingMonth)!=MONTH(CURRENT_DATE) group by (ISBN) order by sum(quantity) desc limit 10) as tab1 on tab1.ISBN=book.ISBN) ;
+
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure retreive_total_sales
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `retreive_total_sales`()
+BEGIN
+select * from topsales where month(topsales.shippingMonth)=MONTH(CURRENT_DATE - INTERVAL 1 MONTH) order by shippingMonth desc;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure update_user_info
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_user_info`(
+in usrName varchar(45),in newusrName varchar(45),in oldpass varchar(100),in newpass varchar(100),
+in fn varchar(45),
+in ln varchar(45),
+in em varchar(45),
+in address varchar(100),in phone varchar(45))
+BEGIN
+if (oldpass is not null) then
+(select pasword into @pass from users where users.username  = usrName);
+(select userID into @id from users where users.username  = newusrName);
+(select userID into @mail from users where users.email  = em);
+
+
+if (@pass != oldpass ) then 
+signal sqlstate '45009' set message_text = 'old password is incorrect';
+elseif (@id != null) then
+signal sqlstate '45010' set message_text = 'new user name is repeated';
+elseif (@mail != null) then
+signal sqlstate '45011' set message_text = 'new mail is repeated';
+else 
+update users set users.pasword = newpass,
+users.username = newusrName,
+users.firstName = fn,
+users.lastName =ln,
+users.email=em,
+ users.shippingAddress = address, users.phonenumber = phone where users.username = usrName;
+end if;
+end if;
+END$$
+
+DELIMITER ;
+USE `bookstore`;
+
+DELIMITER $$
+USE `bookstore`$$
+CREATE
+DEFINER=`root`@`localhost`
+TRIGGER `bookstore`.`book_BEFORE_UPDATE`
+BEFORE UPDATE ON `bookstore`.`book`
+FOR EACH ROW
+BEGIN
+IF new.quantity<0 then
+	signal sqlstate '45000' set message_text ='QUANTITY OF XCECUTING THAT QUERY';
+ END if;
+END$$
+
+USE `bookstore`$$
+CREATE
+DEFINER=`root`@`localhost`
+TRIGGER `bookstore`.`ordertable_BEFORE_DELETE`
+BEFORE DELETE ON `bookstore`.`ordertable`
+FOR EACH ROW
+BEGIN
+	select threshold,quantity into @threshhold1,@qaun from book where book.ISBN=old.ISBN;
+if !old.confirmed and@threshold1<=@quan then
+         update book set quantity=quantity+@quantity where book.ISBN=old.ISBN;
+elseif !old.confirmed then 
+  signal sqlstate '45004' set message_text= "sorry";
+  end if;
+END$$
+
+USE `bookstore`$$
+CREATE
+DEFINER=`root`@`localhost`
+TRIGGER `bookstore`.`ordertable_BEFORE_INSERT`
+BEFORE INSERT ON `bookstore`.`ordertable`
+FOR EACH ROW
+BEGIN
+	select threshold,quantity into @threshold1,@qaun from book where book.ISBN=new.ISBN;
+    
+    IF @qaun >=@threshold1 then
+    signal sqlstate '45000' set message_text='ERROR QUANTITY BIGGER THAN THE THRESHOLD';
+    END IF;
+    	select threshold,quantity into @threshhold1,@qaun from book where book.ISBN=new.ISBN;
+    IF NEW.confirmed then
+    update book set quantity=new.QUANTITY+@qaun where book.ISBN=NEW.ISBN;
+end if;
+END$$
+
+USE `bookstore`$$
+CREATE
+DEFINER=`root`@`localhost`
+TRIGGER `bookstore`.`ordertable_BEFORE_UPDATE`
+BEFORE UPDATE ON `bookstore`.`ordertable`
+FOR EACH ROW
+BEGIN
+	select threshold,quantity into @threshhold1,@qaun from book where book.ISBN=new.ISBN;
+ if old.confirmed then 
+ signal sqlstate '45001' set message_text= "can? upadte a confirmed order";
+ elseif old.quantity != new.quantity or @threshhold1<=@qaun then
+  signal sqlstate '45003' set message_text= "can? upadte the order old.quantity != new.quantity or threshhold<=quantity";
+  elseif !new.confirmed then
+    signal sqlstate '45002' set message_text= "can? upadte the order old.quantity != new.quantity or threshhold<=quantity";
+else
+	update book set quantity=old.QUANTITY+@qaun where book.ISBN=NEW.ISBN;
+end if;
+END$$
+
+USE `bookstore`$$
+CREATE
+DEFINER=`root`@`localhost`
+TRIGGER `bookstore`.`users_BEFORE_INSERT`
+BEFORE INSERT ON `bookstore`.`users`
+FOR EACH ROW
+BEGIN
+if exists (select userID from users where users.username = new.username) then
+signal sqlstate '45008' set message_text = 'username already exists';
+end if;
+END$$
+
+USE `bookstore`$$
+CREATE
+DEFINER=`root`@`localhost`
+TRIGGER `bookstore`.`topsales_AFTER_INSERT_DEACREASE_QUANTITY`
+AFTER INSERT ON `bookstore`.`topsales`
+FOR EACH ROW
+BEGIN
+update book set quantity=quantity-new.quantity where book.ISBN=new.ISBN;
+END$$
+
+
+DELIMITER ;
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
 /*category*/
 insert into category values (1,'Science');
 insert into category values (2,'Art');
@@ -1225,7 +1869,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (16, 'Grand Seduction, The', 526, 1982, 907, 1, 77, 301);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (17, 'Obsession', 540, 1973, 574, 5, 100, 218);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (18, 'Patsy, The', 255, 1993, 316, 3, 39, 770);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (19, 'Nasty Girl, The (schreckliche MÃ¤dchen, Das)', 496, 1988, 760, 2, 29, 966);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (19, 'Nasty Girl, The (schreckliche Mädchen, Das)', 496, 1988, 760, 2, 29, 966);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (20, 'They Made Me a Criminal (I Became a Criminal) (They Made Me a Fugitive)', 525, 1962, 202, 4, 77, 955);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (21, 'Michael Jordan to the Max', 225, 1980, 42, 4, 93, 99);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (22, 'Forbidden', 273, 2014, 606, 2, 59, 228);
@@ -1251,7 +1895,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (42, 'Reformer and the Redhead, The', 570, 1974, 105, 4, 22, 596);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (43, 'Gimme Shelter', 105, 1979, 239, 4, 61, 180);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (44, 'Come Blow Your Horn', 581, 1997, 346, 3, 94, 773);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (45, 'White God (FehÃ©r isten)', 475, 1930, 955, 5, 81, 782);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (45, 'White God (Fehér isten)', 475, 1930, 955, 5, 81, 782);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (46, 'Below', 597, 1934, 167, 5, 97, 644);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (47, 'Help, The', 57, 1943, 234, 2, 93, 46);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (48, 'My Wife Is a Gangster 2 (Jopog manura 2: Dolaon jeonseol)', 394, 1942, 694, 3, 46, 633);
@@ -1261,14 +1905,14 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (52, 'Step Up 3D', 362, 1938, 443, 5, 40, 313);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (53, 'Liberation of L.B. Jones, The', 499, 1985, 804, 1, 82, 705);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (54, 'Dragon Hunter', 374, 1920, 251, 4, 36, 950);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (55, 'Karlsson Brothers (BrÃ¶derna Karlsson)', 403, 1998, 291, 1, 44, 129);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (56, 'Shed No Tears (KÃ¤nn ingen sorg)', 511, 2013, 948, 1, 42, 474);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (55, 'Karlsson Brothers (Bröderna Karlsson)', 403, 1998, 291, 1, 44, 129);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (56, 'Shed No Tears (Känn ingen sorg)', 511, 2013, 948, 1, 42, 474);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (57, 'Dead Genesis', 488, 1982, 193, 5, 67, 566);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (58, 'Precious', 122, 1925, 222, 3, 25, 149);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (59, 'Passengers', 73, 1953, 686, 4, 79, 945);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (60, 'Happiness Never Comes Alone (Un bonheur n''arrive jamais seul)', 8, 1997, 155, 4, 79, 936);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (61, 'Mark of the Devil (Hexen bis aufs Blut gequÃ¤lt)', 272, 2016, 652, 2, 23, 876);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (62, 'Saimaa Gesture, The (Saimaa-ilmiÃ¶)', 489, 1933, 37, 5, 51, 548);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (61, 'Mark of the Devil (Hexen bis aufs Blut gequält)', 272, 2016, 652, 2, 23, 876);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (62, 'Saimaa Gesture, The (Saimaa-ilmiö)', 489, 1933, 37, 5, 51, 548);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (63, 'Level Five', 106, 1920, 934, 3, 55, 494);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (64, 'Cold Prey III (Fritt Vilt III)', 37, 1992, 654, 1, 98, 788);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (65, 'Cloverfield', 510, 1925, 88, 4, 68, 615);
@@ -1286,8 +1930,8 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (77, 'Shaft''s Big Score!', 202, 1980, 677, 1, 44, 736);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (78, 'Out of the Blue', 101, 1978, 676, 3, 42, 576);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (79, 'Where Love Has Gone', 62, 2003, 376, 4, 25, 939);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (80, 'Gods of the Plague (GÃ¶tter der Pest)', 300, 1922, 703, 5, 80, 741);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (81, 'Kiki''s Delivery Service (Majo no takkyÃ»bin)', 92, 1925, 219, 3, 51, 169);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (80, 'Gods of the Plague (Götter der Pest)', 300, 1922, 703, 5, 80, 741);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (81, 'Kiki''s Delivery Service (Majo no takkyûbin)', 92, 1925, 219, 3, 51, 169);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (82, 'How the Grinch Stole Christmas (a.k.a. The Grinch)', 111, 1936, 587, 1, 42, 748);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (83, 'Halloween Tree, The', 300, 1985, 223, 2, 29, 123);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (84, 'White Shadow, The', 155, 1978, 228, 1, 28, 453);
@@ -1343,7 +1987,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (134, 'How to Rob a Bank', 343, 1927, 728, 3, 36, 947);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (135, 'Last Passenger', 250, 1929, 99, 3, 70, 388);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (136, 'Helter Skelter', 586, 1986, 712, 1, 74, 307);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (137, 'Burning Hot Summer, A (Un Ã©tÃ© brÃ»lant)', 363, 1977, 878, 4, 96, 498);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (137, 'Burning Hot Summer, A (Un été brûlant)', 363, 1977, 878, 4, 96, 498);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (138, 'Babylon 5: In the Beginning', 476, 1940, 47, 4, 73, 523);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (139, 'Officer and a Gentleman, An', 480, 1985, 954, 1, 58, 751);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (140, 'Death of a Dynasty', 519, 1936, 967, 5, 88, 886);
@@ -1372,9 +2016,9 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (163, 'Absolute Power', 500, 1992, 458, 2, 36, 146);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (164, 'Fright Night', 335, 1951, 352, 3, 86, 530);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (165, 'Jackass 3.5', 123, 1939, 906, 5, 43, 368);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (166, 'Tale from the Past, A (PÃ«rralle Nga e Kaluara)', 24, 2017, 109, 2, 26, 706);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (166, 'Tale from the Past, A (Përralle Nga e Kaluara)', 24, 2017, 109, 2, 26, 706);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (167, 'Holy Man, The (Mahapurush)', 361, 2003, 250, 2, 73, 457);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (168, 'AutÃ³mata (Automata)', 188, 2010, 979, 2, 86, 634);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (168, 'Autómata (Automata)', 188, 2010, 979, 2, 86, 634);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (169, 'Thirty-Two Short Films About Glenn Gould', 512, 2017, 95, 5, 80, 133);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (170, 'Here Comes Cookie', 386, 2011, 95, 1, 45, 324);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (171, 'Pushover', 289, 1961, 527, 2, 44, 689);
@@ -1387,11 +2031,11 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (178, 'Station West', 383, 1987, 325, 3, 95, 410);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (179, 'Reality', 95, 1920, 237, 4, 53, 375);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (180, 'Rachel, Rachel', 351, 1938, 394, 4, 33, 431);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (181, 'Blame it on Fidel! (La faute Ã  Fidel!)', 287, 1995, 264, 5, 100, 310);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (181, 'Blame it on Fidel! (La faute à Fidel!)', 287, 1995, 264, 5, 100, 310);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (182, 'Dark House', 44, 1924, 35, 4, 86, 685);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (183, 'Galapagos Affair: Satan Came to Eden, The', 506, 1958, 682, 2, 79, 267);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (184, 'Saimaa Gesture, The (Saimaa-ilmiÃ¶)', 538, 1957, 11, 2, 62, 681);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (185, 'Timecrimes (CronocrÃ­menes, Los)', 125, 1955, 508, 1, 93, 829);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (184, 'Saimaa Gesture, The (Saimaa-ilmiö)', 538, 1957, 11, 2, 62, 681);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (185, 'Timecrimes (Cronocrímenes, Los)', 125, 1955, 508, 1, 93, 829);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (186, 'Anatomy (Anatomie)', 313, 2000, 589, 2, 61, 898);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (187, 'A.K.', 53, 1920, 175, 3, 71, 718);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (188, 'Story of Three Loves, The', 306, 1992, 661, 3, 90, 538);
@@ -1401,7 +2045,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (192, 'Pick-up Summer (Pinball Summer)', 346, 1996, 936, 3, 91, 587);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (193, 'Calendar', 432, 2000, 518, 1, 31, 724);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (194, 'Nobody Else But You (Poupoupidou)', 232, 1961, 909, 1, 63, 374);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (195, 'Jin Roh: The Wolf Brigade (Jin-RÃ´)', 250, 1957, 947, 1, 74, 737);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (195, 'Jin Roh: The Wolf Brigade (Jin-Rô)', 250, 1957, 947, 1, 74, 737);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (196, 'See You in Hell, My Darling (Tha se do stin Kolasi, agapi mou)', 35, 1989, 680, 4, 89, 729);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (197, 'Man with the Golden Arm, The', 1, 1933, 382, 3, 34, 947);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (198, 'American Swing', 547, 1995, 440, 4, 99, 922);
@@ -1414,11 +2058,11 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (205, 'Monkey''s Teeth (Dents du singe, Les)', 94, 1983, 264, 1, 50, 10);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (206, 'Reincarnation of Peter Proud, The', 317, 1967, 954, 3, 54, 315);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (207, 'Casanova Brown', 351, 1927, 322, 4, 41, 683);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (208, 'Evangelion: 2.0 You Can (Not) Advance (Evangerion shin gekijÃ´ban: Ha)', 268, 2010, 400, 2, 69, 183);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (208, 'Evangelion: 2.0 You Can (Not) Advance (Evangerion shin gekijôban: Ha)', 268, 2010, 400, 2, 69, 183);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (209, 'Adventures of Sherlock Holmes, The', 42, 1980, 382, 4, 61, 475);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (210, 'Boudu Saved From Drowning (Boudu sauvÃ© des eaux)', 570, 2001, 687, 1, 100, 188);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (211, 'AquÃ­ llega Condemor, el pecador de la pradera', 263, 2003, 177, 4, 98, 704);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (212, 'MÃ­a', 520, 1990, 688, 1, 35, 786);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (210, 'Boudu Saved From Drowning (Boudu sauvé des eaux)', 570, 2001, 687, 1, 100, 188);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (211, 'Aquí llega Condemor, el pecador de la pradera', 263, 2003, 177, 4, 98, 704);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (212, 'Mía', 520, 1990, 688, 1, 35, 786);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (213, 'Don''t Say a Word', 528, 2017, 707, 3, 75, 799);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (214, 'Americathon', 381, 1994, 332, 5, 30, 160);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (215, 'Fast and the Furious, The', 159, 1937, 987, 1, 93, 881);
@@ -1433,7 +2077,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (224, 'All the Rage (It''s the Rage)', 554, 2008, 77, 2, 28, 759);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (225, 'Koran by Heart', 207, 1992, 124, 1, 32, 694);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (226, 'Death Proof', 453, 2007, 863, 3, 99, 205);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (227, 'Three Brothers, The (Les trois frÃ¨res)', 128, 1927, 626, 5, 85, 527);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (227, 'Three Brothers, The (Les trois frères)', 128, 1927, 626, 5, 85, 527);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (228, 'Elena Undone', 27, 1983, 652, 4, 80, 921);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (229, 'Brick Lane', 104, 1980, 12, 4, 24, 297);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (230, 'Lifted', 21, 1928, 81, 3, 75, 110);
@@ -1448,7 +2092,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (239, 'Chungking Express (Chung Hing sam lam)', 542, 1964, 814, 3, 71, 794);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (240, 'Toughguy', 68, 1975, 643, 2, 69, 655);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (241, 'Fiston', 348, 1990, 318, 1, 25, 252);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (242, 'God Is Brazilian (Deus Ã‰ Brasileiro)', 33, 2018, 819, 1, 60, 831);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (242, 'God Is Brazilian (Deus É Brasileiro)', 33, 2018, 819, 1, 60, 831);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (243, 'Ponette', 567, 1948, 779, 3, 89, 674);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (244, 'Secuestrados (Kidnapped)', 302, 1978, 620, 1, 87, 469);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (245, 'Child Bride', 258, 2000, 97, 1, 73, 779);
@@ -1478,7 +2122,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (269, 'Wild Party, The', 129, 1943, 478, 5, 70, 401);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (270, 'Lord of the Flies', 476, 1986, 886, 5, 94, 999);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (271, 'Zero Tolerance (Noll tolerans)', 302, 2010, 468, 3, 36, 779);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (272, 'Pandora''s Box (BÃ¼chse der Pandora, Die)', 466, 2018, 617, 5, 38, 993);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (272, 'Pandora''s Box (Büchse der Pandora, Die)', 466, 2018, 617, 5, 38, 993);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (273, 'Howling, The', 146, 1951, 495, 5, 69, 485);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (274, 'Escapist, The', 237, 1932, 254, 3, 27, 118);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (275, 'Norman', 17, 1926, 170, 2, 38, 685);
@@ -1493,7 +2137,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (284, 'Red Balloon, The (Ballon rouge, Le)', 135, 1991, 555, 3, 47, 740);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (285, 'Another Earth', 507, 1942, 722, 3, 55, 325);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (286, 'Journey to Italy (Viaggio in Italia) (Voyage to Italy) (Voyage in Italy)', 259, 1986, 736, 3, 99, 917);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (287, 'Dragon Ball Z: Bio-Broly (Doragon bÃ´ru Z 11: SÃ»pÃ¢ senshi gekiha! Katsu no wa ore da)', 326, 1975, 519, 2, 60, 666);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (287, 'Dragon Ball Z: Bio-Broly (Doragon bôru Z 11: Sûpâ senshi gekiha! Katsu no wa ore da)', 326, 1975, 519, 2, 60, 666);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (288, 'Crazies, The (a.k.a. Code Name: Trixie)', 288, 1960, 526, 5, 83, 672);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (289, 'Fierce Creatures', 574, 2005, 754, 1, 87, 219);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (290, 'Adventures of Pinocchio, The', 210, 1993, 912, 2, 23, 243);
@@ -1528,7 +2172,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (319, 'Contact High', 456, 2008, 964, 3, 30, 888);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (320, 'Melvin Goes to Dinner', 44, 1972, 309, 1, 77, 705);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (321, 'She and Her Cat (Kanojo to kanojo no neko)', 74, 2011, 18, 5, 87, 608);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (322, 'Sheep Eaters (LampaansyÃ¶jÃ¤t)', 422, 1987, 502, 2, 58, 49);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (322, 'Sheep Eaters (Lampaansyöjät)', 422, 1987, 502, 2, 58, 49);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (323, 'Walk, Don''t Run', 419, 1992, 957, 3, 74, 405);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (324, 'Saturday Night and Sunday Morning', 478, 1934, 674, 5, 74, 834);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (325, 'Abbott and Costello Meet Dr. Jekyll and Mr. Hyde', 407, 1974, 532, 4, 59, 67);
@@ -1539,7 +2183,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (330, 'Zigeunerweisen (Tsigoineruwaizen)', 429, 1989, 571, 2, 62, 524);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (331, 'Fast Times at Ridgemont High', 309, 1969, 558, 2, 66, 150);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (332, 'Yesterday''s Enemy', 171, 1952, 180, 3, 45, 531);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (333, 'Man Who Quit Smoking, The (Mannen som slutade rÃ¶ka)', 529, 1956, 341, 4, 47, 701);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (333, 'Man Who Quit Smoking, The (Mannen som slutade röka)', 529, 1956, 341, 4, 47, 701);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (334, 'Transamerica', 76, 1966, 65, 2, 78, 541);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (335, 'My Friend Irma Goes West', 387, 1958, 586, 3, 63, 685);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (336, 'Frozen Fever', 581, 2005, 301, 4, 42, 738);
@@ -1570,14 +2214,14 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (361, 'Timber Falls', 98, 1955, 477, 3, 39, 160);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (362, 'Cry of the Owl, The', 520, 1986, 461, 3, 82, 31);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (363, 'V.I.P.s, The', 104, 1974, 345, 5, 74, 892);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (364, 'MÃ©tisse (CafÃ© au Lait)', 474, 1945, 843, 5, 31, 355);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (364, 'Métisse (Café au Lait)', 474, 1945, 843, 5, 31, 355);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (365, 'Un vampiro para dos', 546, 1977, 158, 1, 38, 245);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (366, 'Knuckle ', 265, 2008, 337, 5, 90, 160);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (367, 'Cabin Fever', 252, 1955, 851, 3, 73, 60);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (368, 'What Would Jesus Buy?', 326, 1971, 910, 4, 67, 946);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (369, 'Chuck & Buck', 555, 1944, 450, 1, 86, 694);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (370, 'Little Rascals, The', 433, 1958, 183, 5, 26, 291);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (371, 'Show Me Love (Fucking Ã…mÃ¥l)', 343, 2019, 884, 3, 64, 907);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (371, 'Show Me Love (Fucking Åmål)', 343, 2019, 884, 3, 64, 907);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (372, 'Little Drummer Boy, The', 495, 1992, 53, 3, 29, 628);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (373, 'Gitmek: My Marlon and Brando (Gitmek: Benim Marlon ve Brandom)', 259, 2015, 402, 2, 32, 646);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (374, 'Girl Who Played with Fire, The (Flickan som lekte med elden)', 585, 1957, 309, 3, 82, 388);
@@ -1587,7 +2231,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (378, 'Happy Here and Now', 590, 1961, 925, 1, 31, 767);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (379, 'Fugly!', 235, 1938, 908, 1, 58, 714);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (380, 'Perfect Day, A (Un giorno perfetto)', 226, 1930, 363, 3, 23, 957);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (381, 'DestinÃ©es, Les (DestinÃ©es sentimentales, Les)', 592, 1978, 346, 1, 34, 411);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (381, 'Destinées, Les (Destinées sentimentales, Les)', 592, 1978, 346, 1, 34, 411);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (382, 'The Baby Maker', 227, 2018, 952, 4, 54, 62);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (383, 'Beautiful Person, The (La belle personne)', 367, 1977, 507, 5, 51, 17);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (384, 'Shirin in Love', 457, 1996, 801, 2, 51, 466);
@@ -1626,7 +2270,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (417, 'Music of the Heart', 216, 1965, 753, 2, 53, 191);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (418, 'Battle in Outer Space', 492, 1954, 222, 3, 88, 517);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (419, 'Three O''Clock High', 74, 1946, 691, 4, 95, 737);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (420, 'MatinÃ©e', 247, 1936, 300, 2, 47, 507);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (420, 'Matinée', 247, 1936, 300, 2, 47, 507);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (421, 'Corridors of Time: The Visitors II, The (Couloirs du temps: Les visiteurs 2, Les)', 81, 1936, 488, 2, 80, 497);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (422, 'Fear[s] of the Dark (Peur[s] du noir)', 372, 2012, 409, 2, 84, 551);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (423, 'Ursul', 26, 1976, 167, 2, 64, 616);
@@ -1654,7 +2298,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (445, 'Break-Up, The', 554, 1984, 77, 5, 38, 376);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (446, 'Zero Hour!', 555, 1980, 98, 2, 38, 141);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (447, 'Raven, The', 160, 1981, 924, 4, 100, 397);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (448, 'I Always Wanted to Be a Gangster (J''ai toujours rÃªvÃ© d''Ãªtre un gangster)', 217, 1991, 185, 5, 73, 945);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (448, 'I Always Wanted to Be a Gangster (J''ai toujours rêvé d''être un gangster)', 217, 1991, 185, 5, 73, 945);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (449, 'Ice Age', 193, 1941, 329, 1, 83, 224);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (450, '8 Diagram Pole Fighter, The (a.k.a. Invincible Pole Fighter) (Wu Lang ba gua gun)', 44, 1968, 238, 1, 100, 108);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (451, 'To Cross the Rubicon', 237, 2019, 156, 5, 38, 141);
@@ -1669,7 +2313,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (460, 'Fanny', 345, 1993, 777, 2, 20, 612);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (461, 'Classe Tous Risques (Big Risk, The)', 310, 1942, 740, 3, 97, 316);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (462, 'Sweet Karma', 166, 1995, 379, 4, 91, 422);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (463, 'Method, The (MÃ©todo, El)', 406, 1964, 621, 3, 60, 564);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (463, 'Method, The (Método, El)', 406, 1964, 621, 3, 60, 564);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (464, 'Prefontaine', 162, 1959, 653, 1, 26, 423);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (465, 'Fallen, The', 143, 1967, 222, 1, 37, 111);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (466, 'Exam', 565, 2002, 645, 1, 100, 613);
@@ -1678,7 +2322,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (469, 'Cabaret', 249, 1937, 335, 2, 69, 605);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (470, 'Uninvited, The', 572, 2007, 177, 3, 78, 312);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (471, 'Seven Beauties (Pasqualino Settebellezze)', 321, 1955, 521, 5, 69, 105);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (472, 'Ricky Rapper and the Bicycle Thief (Risto RÃ¤ppÃ¤Ã¤jÃ¤ ja polkupyÃ¶rÃ¤varas)', 30, 1964, 246, 4, 56, 160);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (472, 'Ricky Rapper and the Bicycle Thief (Risto Räppääjä ja polkupyörävaras)', 30, 1964, 246, 4, 56, 160);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (473, '16 Blocks', 389, 2019, 266, 5, 87, 252);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (474, 'Hunchback of Notre Dame, The', 455, 1930, 187, 2, 54, 583);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (475, 'Dabangg 2', 200, 1990, 767, 1, 100, 561);
@@ -1695,10 +2339,10 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (486, 'Woman, a Gun and a Noodle Shop, A (San qiang pai an jing qi)', 564, 1924, 635, 4, 95, 565);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (487, 'Resurrecting the Street Walker', 330, 1956, 200, 5, 37, 861);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (488, 'Bart Got a Room', 296, 1946, 591, 3, 80, 89);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (489, 'Live Flesh (Carne trÃ©mula)', 181, 1954, 85, 3, 68, 336);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (489, 'Live Flesh (Carne trémula)', 181, 1954, 85, 3, 68, 336);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (490, 'Race with the Devil', 65, 1928, 745, 2, 99, 413);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (491, 'Stag', 199, 1942, 165, 1, 26, 365);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (492, 'Manrape (MÃ¤n kan inte vÃ¥ldtas) ', 350, 2014, 733, 1, 64, 130);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (492, 'Manrape (Män kan inte våldtas) ', 350, 2014, 733, 1, 64, 130);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (493, 'Case 39', 271, 1951, 32, 3, 62, 864);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (494, 'Shakespeare in Love', 11, 1982, 932, 4, 24, 99);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (495, 'Is the Man Who Is Tall Happy?', 400, 1992, 759, 5, 80, 889);
@@ -1707,7 +2351,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (498, 'Dogfight', 496, 2008, 738, 4, 69, 624);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (499, 'Cinderfella', 349, 1949, 241, 1, 80, 782);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (500, 'Scary Movie', 90, 1999, 399, 1, 47, 959);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (501, 'Magic Hunter (BÃ¼vÃ¶s vadÃ¡sz)', 389, 2010, 229, 2, 95, 744);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (501, 'Magic Hunter (Büvös vadász)', 389, 2010, 229, 2, 95, 744);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (502, 'The Good Son', 347, 1929, 626, 3, 26, 311);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (503, 'Last Action Hero', 418, 1926, 672, 1, 45, 627);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (504, 'Good Morning, Vietnam', 114, 1981, 211, 4, 22, 236);
@@ -1748,7 +2392,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (539, 'Frenzy', 285, 2007, 395, 3, 35, 397);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (540, 'Down and Out in Beverly Hills', 487, 1986, 642, 2, 52, 661);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (541, 'Levottomat 3', 356, 1949, 542, 1, 82, 912);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (542, 'Black Box, The (La boÃ®te noire)', 521, 1974, 173, 3, 74, 954);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (542, 'Black Box, The (La boîte noire)', 521, 1974, 173, 3, 74, 954);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (543, 'Yentl', 323, 2015, 238, 3, 89, 282);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (544, 'No Deposit, No Return', 393, 1935, 330, 5, 39, 497);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (545, 'Boy', 422, 1993, 543, 4, 43, 516);
@@ -1767,14 +2411,14 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (558, 'Shaolin Temple 3: Martial Arts of Shaolin (Nan bei Shao Lin) (Martial Arts of Shaolin)', 175, 1928, 814, 4, 80, 533);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (559, 'Cutter, The', 138, 1968, 216, 4, 42, 877);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (560, 'Bitch Slap', 191, 1981, 475, 1, 77, 864);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (561, 'Dragon Ball Z the Movie: The Tree of Might (Doragon bÃ´ru Z 3: ChikyÃ» marugoto chÃ´ kessen)', 480, 1981, 204, 1, 22, 41);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (561, 'Dragon Ball Z the Movie: The Tree of Might (Doragon bôru Z 3: Chikyû marugoto chô kessen)', 480, 1981, 204, 1, 22, 41);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (562, 'Paris, Texas', 278, 1970, 471, 4, 90, 888);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (563, 'Rugrats Movie, The', 449, 1949, 934, 2, 25, 813);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (564, 'Drive Me Crazy', 471, 2004, 120, 3, 29, 545);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (565, 'Hypocrites', 488, 1952, 891, 5, 33, 783);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (566, 'Where Sleeping Dogs Lie', 93, 1981, 360, 5, 50, 189);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (567, 'Last Action Hero', 46, 1965, 455, 4, 55, 997);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (568, 'Big Bang in Tunguska (Das RÃ¤tsel von Tunguska)', 113, 2018, 63, 5, 70, 956);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (568, 'Big Bang in Tunguska (Das Rätsel von Tunguska)', 113, 2018, 63, 5, 70, 956);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (569, 'In This Our Life', 312, 1936, 610, 5, 59, 331);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (570, 'House of Flying Daggers (Shi mian mai fu)', 292, 1971, 411, 1, 36, 880);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (571, 'American President, The', 45, 1970, 71, 1, 57, 31);
@@ -1820,7 +2464,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (611, 'Groove Tube, The', 75, 1987, 765, 2, 87, 236);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (612, 'Switching Goals', 532, 1930, 98, 3, 27, 294);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (613, 'Find Me Guilty', 547, 1959, 225, 5, 85, 927);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (614, 'Royal Affair, A (Kongelig affÃ¦re, En)', 484, 2019, 576, 3, 65, 367);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (614, 'Royal Affair, A (Kongelig affære, En)', 484, 2019, 576, 3, 65, 367);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (615, 'Greyfriars Bobby (a.k.a. Greyfriars Bobby: The True Story of a Dog)', 285, 1961, 69, 1, 59, 215);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (616, 'Adventures of Rocky and Bullwinkle, The', 113, 1987, 917, 4, 44, 179);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (617, 'Planet Ocean', 137, 1964, 109, 3, 99, 818);
@@ -1829,15 +2473,15 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (620, 'Samson and Delilah', 367, 2019, 720, 1, 95, 178);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (621, 'And Then There Was You', 254, 1934, 591, 3, 28, 238);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (622, 'Happy Christmas', 478, 1956, 64, 4, 48, 785);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (623, 'Gainsbourg (Vie HÃ©roÃ¯que)', 485, 1966, 816, 2, 84, 89);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (623, 'Gainsbourg (Vie Héroïque)', 485, 1966, 816, 2, 84, 89);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (624, 'Inside The X-files', 90, 1969, 589, 5, 54, 922);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (625, 'Idiot Returns, The (NÃ¡vrat idiota)', 226, 1959, 305, 1, 58, 68);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (625, 'Idiot Returns, The (Návrat idiota)', 226, 1959, 305, 1, 58, 68);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (626, 'Maiden''s Cheek (To xylo vgike apo ton Paradeiso)', 543, 1921, 662, 3, 42, 26);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (627, 'Couch Trip, The', 129, 1976, 18, 4, 20, 777);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (628, 'Journey Beyond Three Seas', 163, 1962, 808, 5, 34, 129);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (629, 'Miracle Mile', 347, 2008, 875, 4, 42, 534);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (630, 'Radio Days', 136, 2002, 217, 3, 99, 653);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (631, 'Counterfeiters, The (Die FÃ¤lscher)', 491, 1975, 324, 1, 53, 942);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (631, 'Counterfeiters, The (Die Fälscher)', 491, 1975, 324, 1, 53, 942);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (632, 'Good Man in Africa, A', 47, 1955, 165, 2, 90, 538);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (633, 'Splinterheads', 260, 1934, 583, 4, 75, 430);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (634, 'Scorpion King 2: Rise of a Warrior, The', 215, 2006, 913, 2, 45, 878);
@@ -1869,7 +2513,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (660, 'Great World of Sound', 289, 1951, 447, 4, 31, 931);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (661, 'Divorce', 490, 1951, 353, 2, 75, 80);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (662, 'Loser', 30, 1921, 994, 1, 32, 972);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (663, 'Lola MontÃ¨s', 387, 2001, 131, 4, 29, 942);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (663, 'Lola Montès', 387, 2001, 131, 4, 29, 942);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (664, 'Singh Is Kinng', 276, 1953, 863, 2, 55, 378);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (665, 'Saving Face', 211, 1931, 652, 3, 69, 173);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (666, 'Buffalo Soldiers', 147, 1990, 891, 5, 34, 95);
@@ -1896,14 +2540,14 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (687, 'A Good Marriage', 144, 1986, 480, 2, 46, 781);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (688, 'Killing Zoe', 448, 1998, 691, 5, 67, 935);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (689, 'Hidalgo', 127, 1981, 599, 2, 100, 569);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (690, 'Disco and Atomic War (Disko ja tuumasÃµda)', 68, 1966, 521, 2, 53, 237);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (690, 'Disco and Atomic War (Disko ja tuumasõda)', 68, 1966, 521, 2, 53, 237);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (691, 'Last Summer', 395, 1997, 659, 1, 36, 81);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (692, 'Eraserhead', 78, 1951, 172, 3, 24, 383);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (693, 'Art of Travel, The', 405, 2003, 113, 1, 92, 505);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (694, 'Jean de Florette', 179, 1999, 677, 4, 50, 618);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (695, 'G@me', 145, 1957, 881, 5, 79, 165);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (696, 'B.F.''s Daughter', 554, 1991, 322, 1, 88, 351);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (697, 'Werner - Gekotzt wird spÃ¤ter', 371, 1927, 238, 2, 70, 472);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (697, 'Werner - Gekotzt wird später', 371, 1927, 238, 2, 70, 472);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (698, 'About Face: Supermodels Then and Now', 247, 1929, 891, 1, 21, 592);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (699, 'Helen', 512, 1951, 819, 2, 73, 159);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (700, 'Red Bear, A (Un oso rojo)', 482, 1952, 318, 3, 90, 390);
@@ -1927,9 +2571,9 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (718, 'Finding Forrester', 328, 1968, 140, 2, 95, 708);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (719, 'Destry Rides Again', 492, 2008, 966, 4, 82, 698);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (720, 'Dragon ball Z 04: Lord Slug', 29, 1921, 901, 2, 77, 663);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (721, 'City of No Limits, The (la ciudad sin lÃ­mites, En)', 381, 1970, 990, 4, 50, 581);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (721, 'City of No Limits, The (la ciudad sin límites, En)', 381, 1970, 990, 4, 50, 581);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (722, 'Place Called Chiapas, A', 225, 1983, 192, 2, 88, 518);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (723, 'Case of the Grinning Cat, The (Chats perchÃ©s)', 444, 2013, 347, 5, 33, 25);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (723, 'Case of the Grinning Cat, The (Chats perchés)', 444, 2013, 347, 5, 33, 25);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (724, 'My Future Boyfriend', 407, 1934, 544, 3, 45, 141);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (725, 'Spasmo', 10, 1961, 672, 5, 24, 90);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (726, 'Babar The Movie', 92, 1989, 386, 4, 94, 86);
@@ -1951,7 +2595,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (742, 'Dungeons & Dragons', 368, 1970, 66, 1, 72, 310);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (743, 'Study in Choreography for Camera, A', 71, 1951, 635, 5, 24, 432);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (744, 'Balance, La', 556, 1973, 814, 2, 76, 426);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (745, 'Me Too (Yo, tambiÃ©n)', 81, 1963, 561, 3, 89, 744);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (745, 'Me Too (Yo, también)', 81, 1963, 561, 3, 89, 744);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (746, 'Bridge on the River Kwai, The', 39, 1967, 707, 4, 72, 714);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (747, 'The Golden Eye', 115, 1936, 351, 5, 40, 850);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (748, 'Far', 556, 1977, 214, 4, 22, 951);
@@ -2040,7 +2684,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (831, 'Charge of the Light Brigade, The', 211, 1998, 456, 5, 88, 903);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (832, 'No Regrets for Our Youth (Waga seishun ni kuinashi)', 522, 1995, 176, 1, 42, 34);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (833, 'Rookie, The', 329, 2005, 713, 3, 38, 379);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (834, 'Emma''s Bliss (Emmas GlÃ¼ck)', 362, 1925, 709, 3, 91, 250);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (834, 'Emma''s Bliss (Emmas Glück)', 362, 1925, 709, 3, 91, 250);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (835, 'Lost in the Desert', 431, 1972, 554, 3, 97, 812);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (836, 'Happenstance (Battement d''ailes du papillon, Le)', 399, 1952, 640, 3, 49, 25);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (837, 'Smokin'' Aces 2: Assassins'' Ball', 539, 2008, 485, 4, 47, 773);
@@ -2134,8 +2778,8 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (925, 'Sawdust and Tinsel (Gycklarnas afton)', 551, 1941, 506, 5, 52, 465);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (926, 'G@me', 99, 2002, 114, 5, 52, 752);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (927, 'Miracle on 34th Street', 254, 2003, 456, 2, 25, 155);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (928, 'Ticket To Romance (En enkelt til KorsÃ¸r)', 346, 1955, 225, 5, 98, 967);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (929, 'Munekata Sisters, The (Munekata kyÃ´dai)', 548, 2019, 378, 2, 96, 706);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (928, 'Ticket To Romance (En enkelt til Korsør)', 346, 1955, 225, 5, 98, 967);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (929, 'Munekata Sisters, The (Munekata kyôdai)', 548, 2019, 378, 2, 96, 706);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (930, 'Flightplan', 56, 1920, 306, 1, 76, 889);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (931, 'Parting Glances', 410, 1961, 422, 3, 99, 686);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (932, 'Eila, Rampe and Likka', 121, 1935, 133, 1, 61, 6);
@@ -2158,7 +2802,7 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (949, 'Prize of Peril, The (Prix du danger, Le)', 300, 1943, 741, 5, 49, 983);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (950, 'City Slickers', 188, 2019, 300, 1, 96, 728);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (951, 'Awfully Big Adventure, An', 299, 2012, 756, 2, 72, 225);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (952, 'Dragon Ball Z: The History of Trunks (Doragon bÃ´ru Z: ZetsubÃ´ e no hankÃ´!! Nokosareta chÃ´ senshi - Gohan to Torankusu)', 593, 1986, 731, 2, 25, 904);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (952, 'Dragon Ball Z: The History of Trunks (Doragon bôru Z: Zetsubô e no hankô!! Nokosareta chô senshi - Gohan to Torankusu)', 593, 1986, 731, 2, 25, 904);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (953, 'Gangster No. 1', 223, 1979, 514, 2, 55, 928);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (954, 'Fires on the Plain (Nobi)', 458, 1968, 31, 3, 54, 694);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (955, 'House Party 3', 284, 1993, 408, 3, 81, 246);
@@ -2191,11 +2835,11 @@ insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold,
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (982, 'Mod Squad, The', 551, 1925, 817, 3, 60, 138);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (983, 'Beginning of the End', 212, 2012, 626, 1, 59, 353);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (984, 'The Happy Road', 254, 1930, 981, 5, 37, 546);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (985, 'Sex and Lucia (LucÃ­a y el sexo)', 310, 2003, 783, 3, 79, 779);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (985, 'Sex and Lucia (Lucía y el sexo)', 310, 2003, 783, 3, 79, 779);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (986, 'Wasteland', 21, 1979, 325, 2, 38, 475);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (987, 'The Cheat', 404, 1929, 873, 5, 86, 648);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (988, 'Skies Above the Landscape (Nebo iznad krajolika)', 20, 1923, 735, 4, 73, 210);
-insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (989, 'Young Thugs: Nostalgia (Kishiwada shÃ´nen gurentai: BÃ´kyÃ´)', 490, 1932, 237, 4, 82, 782);
+insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (989, 'Young Thugs: Nostalgia (Kishiwada shônen gurentai: Bôkyô)', 490, 1932, 237, 4, 82, 782);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (990, 'Dead or Alive: Hanzaisha', 155, 1932, 164, 1, 29, 576);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (991, 'Scarlet Letter, The', 127, 1927, 583, 5, 32, 886);
 insert into book (ISBN, Title, PubID, PublishYear, price, categoryID, threshold, quantity) values (992, 'Great Balls of Fire!', 58, 1969, 713, 2, 80, 57);
@@ -5415,3 +6059,504 @@ insert into users (userID, username, pasword, firstName, lastName, email, phonen
 insert into users (userID, username, pasword, firstName, lastName, email, phonenumber, shippingAddress, user_type) values (998, 'Fernandina Polglaze', 'JQAkhIapzNl', 'Fernandina', 'Polglaze', 'fpolglazerp@newsvine.com', '9417527174', '0 Westridge Lane', false);
 insert into users (userID, username, pasword, firstName, lastName, email, phonenumber, shippingAddress, user_type) values (999, 'Arman McTrustie', 'LC3bma', 'Arman', 'McTrustie', 'amctrustierq@theglobeandmail.com', '2099729188', '78173 Hayes Road', false);
 insert into users (userID, username, pasword, firstName, lastName, email, phonenumber, shippingAddress, user_type) values (1000, 'Allissa Bernardoni', 'xjgSA7', 'Allissa', 'Bernardoni', 'abernardonirr@over-blog.com', '1638619059', '36501 Delaware Pass', true);
+update users set pasword=md5(pasword) ;
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (1, 343, 5, 160, '2017-12-22 19:06:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (2, 523, 10, 194, '2017-12-31 19:40:29');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (3, 534, 9, 15, '2018-12-20 10:38:47');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (4, 609, 5, 171, '2017-12-28 18:47:23');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (5, 732, 9, 56, '2017-05-24 15:49:48');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (6, 705, 1, 115, '2017-09-10 17:39:05');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (7, 214, 6, 173, '2018-12-26 10:45:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (8, 490, 8, 41, '2017-06-22 06:27:12');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (9, 160, 4, 104, '2017-11-26 21:39:30');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (10, 393, 4, 100, '2018-12-04 22:13:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (11, 194, 2, 18, '2018-09-20 02:27:31');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (12, 506, 4, 69, '2019-03-05 02:49:26');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (13, 11, 4, 111, '2017-07-10 13:06:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (14, 455, 9, 63, '2017-10-15 22:58:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (15, 857, 8, 76, '2018-11-20 07:23:26');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (16, 125, 1, 69, '2018-08-19 16:12:23');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (17, 393, 5, 150, '2017-05-16 14:40:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (18, 234, 4, 33, '2018-02-08 11:26:00');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (19, 646, 5, 69, '2018-01-11 08:26:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (20, 811, 6, 158, '2019-04-21 17:25:00');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (21, 110, 10, 2, '2018-11-10 18:45:52');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (22, 449, 2, 99, '2018-10-10 21:41:27');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (23, 150, 9, 112, '2018-03-11 08:19:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (24, 209, 8, 71, '2017-05-11 03:08:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (25, 653, 1, 48, '2019-02-28 18:28:10');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (26, 559, 4, 89, '2018-01-20 09:05:13');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (27, 776, 1, 43, '2017-08-31 11:52:01');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (28, 95, 4, 85, '2018-12-31 05:55:23');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (29, 788, 2, 121, '2018-05-21 04:33:06');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (30, 967, 10, 106, '2018-02-20 12:07:21');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (31, 159, 2, 51, '2018-01-11 07:44:03');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (32, 632, 2, 105, '2019-04-11 03:30:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (33, 622, 5, 34, '2018-05-05 08:53:01');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (34, 637, 8, 8, '2018-05-13 06:13:39');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (35, 15, 7, 178, '2018-08-07 06:26:06');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (36, 775, 9, 87, '2017-10-26 04:55:59');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (37, 405, 7, 41, '2018-04-11 11:41:36');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (38, 373, 4, 120, '2017-12-22 15:57:32');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (39, 172, 6, 81, '2017-12-24 09:39:06');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (40, 324, 1, 105, '2017-12-12 15:34:14');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (41, 400, 5, 191, '2017-12-24 18:24:21');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (42, 819, 2, 147, '2017-09-06 21:10:00');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (43, 920, 3, 123, '2017-09-26 00:48:21');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (44, 851, 7, 51, '2018-03-08 19:33:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (45, 936, 1, 192, '2017-09-08 14:58:51');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (46, 972, 8, 11, '2018-02-01 03:24:22');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (47, 841, 9, 186, '2017-11-22 14:38:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (48, 83, 6, 126, '2017-06-28 05:43:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (49, 62, 7, 144, '2017-12-29 09:43:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (50, 411, 2, 172, '2017-09-13 09:09:43');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (51, 856, 1, 120, '2018-01-26 22:50:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (52, 152, 8, 108, '2017-05-25 01:19:29');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (53, 148, 10, 49, '2018-11-12 07:39:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (54, 922, 8, 152, '2018-05-01 15:54:13');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (55, 771, 1, 151, '2017-12-27 18:45:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (56, 21, 1, 9, '2018-09-16 10:33:43');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (57, 713, 10, 42, '2019-02-02 07:39:23');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (58, 826, 2, 101, '2018-08-07 16:03:21');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (59, 813, 7, 5, '2017-09-19 10:21:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (60, 743, 1, 50, '2018-03-10 10:13:20');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (61, 597, 6, 126, '2018-03-13 14:48:55');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (62, 738, 5, 6, '2018-08-26 04:09:50');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (63, 413, 3, 14, '2018-01-15 20:56:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (64, 91, 1, 161, '2018-05-11 19:25:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (65, 62, 10, 164, '2018-02-12 05:32:39');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (66, 762, 10, 36, '2018-12-12 16:53:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (67, 867, 3, 46, '2018-05-29 05:01:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (68, 66, 9, 182, '2017-07-09 03:43:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (69, 412, 8, 127, '2018-09-23 15:51:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (70, 468, 4, 173, '2018-11-12 00:14:25');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (71, 762, 2, 180, '2018-12-12 03:36:57');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (72, 158, 1, 57, '2019-03-25 20:58:54');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (73, 775, 3, 116, '2017-12-26 21:11:46');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (74, 522, 9, 123, '2017-12-24 20:08:08');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (75, 388, 7, 164, '2019-01-29 21:23:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (76, 121, 10, 173, '2017-06-08 12:10:55');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (77, 749, 10, 51, '2017-07-09 17:47:06');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (78, 854, 10, 160, '2018-07-10 06:15:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (79, 97, 5, 197, '2018-06-17 20:12:03');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (80, 139, 7, 69, '2017-07-23 21:18:49');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (81, 377, 3, 67, '2017-12-09 10:42:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (82, 493, 5, 194, '2017-10-15 09:50:55');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (83, 422, 8, 187, '2017-11-15 04:56:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (84, 936, 1, 70, '2018-11-04 21:26:19');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (85, 677, 6, 62, '2018-08-19 21:26:29');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (86, 48, 1, 83, '2019-04-02 11:34:58');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (87, 14, 10, 175, '2018-02-02 05:01:24');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (88, 763, 2, 96, '2017-06-12 23:13:59');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (89, 463, 8, 110, '2017-12-26 19:50:35');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (90, 250, 7, 183, '2018-07-23 19:48:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (91, 775, 10, 197, '2019-04-20 10:32:36');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (92, 564, 1, 97, '2017-05-20 09:22:01');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (93, 861, 3, 101, '2017-10-23 14:09:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (94, 512, 5, 161, '2018-04-06 08:24:46');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (95, 747, 9, 28, '2018-03-06 09:08:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (96, 923, 3, 127, '2019-05-08 11:56:37');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (97, 637, 7, 96, '2018-10-09 06:51:39');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (98, 810, 2, 22, '2017-10-21 11:49:57');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (99, 436, 1, 1, '2019-01-21 04:43:28');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (100, 85, 9, 53, '2019-01-07 15:55:12');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (101, 43, 2, 78, '2019-03-31 07:30:42');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (102, 926, 4, 111, '2017-07-02 13:45:13');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (103, 252, 8, 186, '2017-09-28 10:17:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (104, 522, 2, 150, '2018-05-31 19:42:46');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (105, 20, 1, 190, '2018-01-09 19:06:31');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (106, 382, 1, 87, '2017-11-21 00:30:59');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (107, 715, 6, 78, '2018-07-12 20:15:06');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (108, 391, 4, 196, '2018-08-17 01:18:05');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (109, 238, 7, 23, '2017-07-11 16:04:54');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (110, 686, 5, 76, '2018-06-29 14:42:27');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (111, 831, 4, 1, '2018-07-14 17:30:21');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (112, 714, 7, 7, '2018-08-12 00:07:03');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (113, 575, 2, 37, '2018-12-30 14:50:17');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (114, 962, 1, 110, '2018-08-15 12:45:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (115, 881, 8, 106, '2018-05-25 18:35:42');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (116, 500, 3, 67, '2017-08-06 02:35:54');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (117, 925, 9, 89, '2018-03-03 05:19:54');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (118, 632, 7, 9, '2017-09-29 16:25:49');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (119, 557, 3, 101, '2018-04-26 05:51:57');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (120, 304, 5, 167, '2017-08-02 17:04:45');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (121, 110, 3, 23, '2018-05-09 01:34:54');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (122, 716, 3, 185, '2019-02-22 09:09:25');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (123, 423, 3, 129, '2018-01-25 02:30:45');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (124, 438, 2, 172, '2019-02-14 10:27:40');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (125, 736, 4, 79, '2018-03-15 22:30:31');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (126, 659, 5, 171, '2017-12-30 07:11:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (127, 303, 5, 199, '2018-10-11 06:33:08');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (128, 799, 8, 17, '2018-09-09 15:04:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (129, 405, 6, 36, '2018-08-21 11:02:30');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (130, 181, 6, 96, '2019-04-24 08:14:02');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (131, 514, 4, 113, '2017-12-20 12:58:29');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (132, 133, 4, 109, '2018-08-07 05:02:51');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (133, 566, 2, 181, '2017-07-24 06:52:37');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (134, 715, 5, 33, '2017-12-19 13:16:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (135, 212, 6, 173, '2017-09-18 02:45:04');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (136, 493, 1, 78, '2017-08-03 19:50:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (137, 490, 5, 186, '2018-03-22 23:06:26');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (138, 716, 6, 34, '2019-03-11 11:33:57');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (139, 619, 8, 79, '2018-09-16 16:43:25');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (140, 40, 3, 145, '2017-07-19 05:48:51');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (141, 972, 2, 126, '2018-06-21 09:49:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (142, 421, 3, 58, '2018-05-08 19:13:29');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (143, 169, 3, 60, '2018-07-26 07:14:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (144, 635, 5, 189, '2017-10-25 18:26:06');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (145, 560, 2, 46, '2018-04-28 11:24:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (146, 699, 5, 181, '2018-09-10 17:18:14');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (147, 687, 4, 172, '2017-12-05 17:58:57');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (148, 241, 1, 155, '2018-08-24 18:26:52');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (149, 327, 6, 110, '2019-03-13 22:32:29');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (150, 795, 4, 11, '2019-04-16 17:26:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (151, 290, 6, 102, '2018-08-21 08:38:20');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (152, 661, 5, 137, '2018-01-16 12:27:45');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (153, 807, 6, 180, '2018-01-07 13:49:01');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (154, 832, 6, 191, '2017-05-10 02:12:35');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (155, 317, 4, 39, '2018-03-29 02:03:55');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (156, 737, 3, 44, '2019-02-23 08:12:00');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (157, 303, 9, 142, '2018-04-26 04:58:19');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (158, 757, 10, 16, '2019-02-14 11:16:00');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (159, 640, 7, 78, '2018-04-24 03:59:10');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (160, 860, 6, 151, '2019-01-31 03:19:12');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (161, 354, 4, 27, '2019-02-05 06:25:54');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (162, 262, 4, 168, '2018-10-07 01:16:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (163, 856, 1, 172, '2018-09-09 08:03:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (164, 17, 2, 94, '2018-08-24 22:43:14');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (165, 77, 6, 8, '2019-02-14 05:13:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (166, 493, 5, 152, '2018-11-16 03:23:23');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (167, 635, 6, 167, '2018-11-02 14:03:14');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (168, 283, 6, 2, '2017-05-29 01:19:03');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (169, 722, 1, 162, '2019-02-19 15:25:22');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (170, 709, 8, 147, '2017-06-09 06:42:35');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (171, 957, 10, 70, '2017-12-10 11:56:58');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (172, 602, 5, 167, '2018-02-22 07:32:52');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (173, 28, 7, 20, '2017-08-26 23:32:29');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (174, 662, 6, 41, '2017-09-18 19:09:13');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (175, 471, 1, 170, '2017-06-06 02:36:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (176, 295, 4, 135, '2018-10-29 04:04:29');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (177, 252, 4, 172, '2018-07-26 23:32:39');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (178, 911, 4, 192, '2017-08-28 12:24:22');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (179, 519, 7, 90, '2019-05-07 14:37:12');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (180, 868, 10, 86, '2017-09-22 01:24:14');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (181, 808, 4, 90, '2019-03-04 20:06:32');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (182, 169, 10, 34, '2017-07-27 00:03:17');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (183, 748, 10, 114, '2017-12-09 10:11:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (184, 632, 3, 67, '2018-01-26 12:24:17');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (185, 484, 2, 48, '2018-10-22 23:28:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (186, 1000, 4, 14, '2019-03-03 02:53:47');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (187, 7, 3, 126, '2018-10-24 03:36:35');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (188, 252, 9, 166, '2018-10-26 12:16:46');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (189, 359, 4, 88, '2018-04-05 10:06:59');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (190, 907, 2, 54, '2019-01-19 09:03:56');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (191, 974, 5, 181, '2018-02-16 07:19:43');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (192, 802, 9, 175, '2018-12-10 19:43:30');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (193, 227, 1, 77, '2018-12-03 21:02:46');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (194, 426, 2, 18, '2017-12-08 15:21:09');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (195, 932, 2, 78, '2018-12-20 21:46:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (196, 816, 7, 92, '2019-01-10 23:37:42');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (197, 179, 1, 147, '2018-10-24 15:04:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (198, 971, 2, 141, '2017-11-24 16:43:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (199, 200, 5, 124, '2018-10-08 00:27:52');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (200, 560, 1, 136, '2019-03-16 09:21:27');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (201, 155, 5, 130, '2019-02-27 04:33:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (202, 30, 5, 148, '2018-10-21 01:11:43');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (203, 273, 10, 168, '2018-10-18 08:45:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (204, 694, 5, 129, '2018-03-23 22:24:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (205, 909, 3, 80, '2017-12-16 08:34:30');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (206, 966, 10, 127, '2018-07-20 10:31:36');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (207, 810, 3, 183, '2018-02-05 00:57:59');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (208, 216, 8, 83, '2018-08-10 01:43:03');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (209, 840, 8, 121, '2018-03-18 16:21:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (210, 969, 9, 62, '2019-03-24 03:46:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (211, 799, 9, 125, '2019-05-01 06:29:13');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (212, 803, 1, 63, '2017-12-29 19:33:02');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (213, 995, 7, 193, '2018-04-21 15:11:09');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (214, 521, 10, 172, '2017-06-10 15:41:48');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (215, 283, 3, 113, '2018-01-27 08:05:26');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (216, 28, 2, 26, '2017-05-14 18:52:28');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (217, 437, 10, 129, '2018-10-17 03:40:11');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (218, 978, 10, 67, '2018-07-05 15:33:58');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (219, 654, 2, 90, '2018-06-22 12:03:55');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (220, 576, 7, 195, '2019-05-08 10:18:10');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (221, 399, 2, 146, '2018-05-04 23:01:09');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (222, 952, 5, 64, '2018-03-08 11:57:52');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (223, 919, 10, 14, '2018-07-19 03:45:59');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (224, 680, 9, 196, '2017-11-26 03:07:31');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (225, 99, 10, 129, '2018-02-04 20:21:50');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (226, 569, 8, 99, '2018-01-22 07:13:17');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (227, 314, 9, 8, '2017-11-04 14:46:11');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (228, 474, 5, 85, '2018-03-14 20:20:50');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (229, 8, 9, 165, '2018-09-05 18:33:25');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (230, 340, 7, 50, '2017-10-25 10:48:39');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (231, 945, 1, 94, '2018-07-23 12:08:45');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (232, 180, 10, 75, '2017-06-18 14:46:51');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (233, 779, 10, 196, '2019-02-04 05:32:51');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (234, 970, 1, 44, '2019-02-12 19:45:09');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (235, 740, 10, 87, '2017-05-19 13:53:25');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (236, 600, 5, 192, '2019-03-23 04:51:26');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (237, 930, 1, 196, '2018-09-16 11:44:48');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (238, 712, 9, 6, '2017-05-16 19:17:42');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (239, 817, 2, 86, '2017-09-13 00:33:46');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (240, 189, 1, 137, '2017-10-03 12:11:25');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (241, 336, 3, 154, '2018-05-17 07:53:55');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (242, 919, 10, 4, '2017-12-17 19:51:13');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (243, 713, 10, 114, '2017-06-08 12:22:47');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (244, 685, 1, 173, '2018-03-16 04:38:20');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (245, 63, 1, 20, '2018-02-15 00:26:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (246, 644, 6, 117, '2017-09-16 05:39:38');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (247, 268, 10, 150, '2018-03-25 19:24:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (248, 18, 8, 191, '2019-02-07 07:27:20');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (249, 541, 7, 10, '2018-08-09 00:19:09');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (250, 926, 4, 49, '2019-04-03 05:27:17');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (251, 639, 5, 126, '2018-01-25 05:08:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (252, 593, 8, 46, '2018-07-28 15:33:49');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (253, 788, 4, 107, '2017-06-12 05:23:21');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (254, 94, 7, 122, '2018-12-15 21:17:19');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (255, 812, 4, 165, '2017-05-16 05:10:23');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (256, 935, 6, 184, '2017-10-29 15:54:52');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (257, 888, 10, 177, '2017-11-29 02:16:36');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (258, 363, 5, 87, '2018-04-17 03:23:03');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (259, 640, 1, 175, '2017-12-12 12:02:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (260, 900, 2, 50, '2018-07-02 14:21:28');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (261, 206, 9, 15, '2018-04-24 22:15:55');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (262, 915, 7, 147, '2018-01-23 22:24:57');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (263, 700, 4, 95, '2018-05-30 16:02:49');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (264, 901, 7, 173, '2017-06-29 09:42:17');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (265, 828, 4, 82, '2019-03-02 03:37:40');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (266, 877, 3, 43, '2017-11-21 16:05:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (267, 211, 3, 142, '2019-04-12 10:12:01');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (268, 808, 4, 154, '2018-11-07 23:42:09');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (269, 1000, 4, 83, '2018-07-27 07:57:38');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (270, 395, 10, 107, '2018-02-24 17:57:30');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (271, 345, 5, 146, '2018-07-27 19:25:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (272, 935, 7, 10, '2019-01-04 15:45:40');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (273, 460, 2, 11, '2017-11-02 12:35:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (274, 92, 7, 15, '2018-10-09 18:50:08');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (275, 35, 5, 188, '2019-03-25 02:53:46');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (276, 136, 7, 192, '2018-02-06 21:33:30');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (277, 119, 4, 191, '2019-01-18 10:40:35');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (278, 496, 5, 167, '2018-04-30 18:15:56');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (279, 746, 9, 17, '2017-11-19 00:44:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (280, 492, 10, 149, '2018-03-21 23:25:20');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (281, 787, 10, 98, '2018-12-21 15:37:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (282, 9, 9, 49, '2018-07-15 03:01:56');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (283, 946, 4, 195, '2018-09-05 18:14:12');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (284, 75, 9, 64, '2018-01-29 16:45:55');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (285, 752, 2, 157, '2017-09-04 14:37:29');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (286, 265, 1, 155, '2018-06-24 17:43:42');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (287, 925, 5, 68, '2019-02-01 17:34:40');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (288, 278, 7, 161, '2019-04-08 23:38:01');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (289, 383, 9, 107, '2017-06-24 17:15:30');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (290, 910, 1, 136, '2017-09-20 06:38:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (291, 916, 9, 156, '2019-05-02 12:19:57');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (292, 850, 2, 53, '2018-07-08 07:27:56');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (293, 711, 5, 22, '2017-09-02 03:13:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (294, 887, 1, 77, '2018-11-09 15:47:46');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (295, 835, 10, 181, '2017-08-02 23:40:03');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (296, 336, 2, 189, '2018-04-19 07:12:32');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (297, 817, 2, 114, '2018-11-28 14:53:35');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (298, 693, 6, 117, '2018-12-18 00:05:09');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (299, 391, 10, 186, '2018-01-20 04:02:11');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (300, 670, 3, 147, '2017-08-04 10:36:08');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (301, 389, 3, 174, '2017-09-01 16:31:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (302, 444, 10, 67, '2017-09-09 10:31:24');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (303, 814, 8, 20, '2018-03-19 20:20:04');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (304, 793, 5, 102, '2018-08-11 08:51:38');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (305, 277, 9, 85, '2019-01-25 05:56:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (306, 66, 5, 105, '2017-06-18 04:55:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (307, 532, 1, 77, '2018-09-22 22:46:22');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (308, 46, 5, 195, '2017-05-25 19:43:24');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (309, 569, 7, 56, '2018-10-27 02:40:03');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (310, 263, 4, 148, '2017-06-28 22:11:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (311, 701, 6, 170, '2018-11-16 15:57:03');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (312, 963, 2, 32, '2018-06-17 04:06:02');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (313, 649, 1, 50, '2018-11-19 07:21:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (314, 872, 4, 104, '2019-01-20 16:58:04');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (315, 538, 3, 29, '2019-03-06 03:16:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (316, 724, 3, 143, '2018-04-04 18:54:22');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (317, 178, 2, 60, '2019-04-23 04:26:49');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (318, 276, 10, 80, '2018-04-05 23:11:27');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (319, 205, 8, 129, '2019-03-28 01:40:31');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (320, 344, 1, 120, '2017-11-18 18:03:48');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (321, 681, 9, 39, '2018-07-29 00:19:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (322, 530, 3, 18, '2017-05-25 03:28:27');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (323, 327, 4, 122, '2017-10-14 07:51:22');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (324, 984, 9, 33, '2018-10-18 12:40:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (325, 657, 6, 160, '2018-12-28 20:47:54');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (326, 42, 4, 14, '2018-11-03 12:32:14');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (327, 440, 7, 12, '2018-01-23 04:05:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (328, 152, 7, 56, '2018-12-09 14:18:20');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (329, 520, 9, 174, '2019-04-26 22:16:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (330, 752, 3, 64, '2017-12-22 06:59:51');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (331, 71, 7, 18, '2017-09-04 11:01:00');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (332, 986, 10, 114, '2017-12-06 13:32:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (333, 77, 3, 132, '2017-11-10 06:14:01');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (334, 701, 6, 130, '2018-03-12 11:46:12');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (335, 313, 4, 130, '2017-06-08 03:11:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (336, 451, 6, 159, '2018-04-17 01:41:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (337, 91, 7, 186, '2019-02-08 19:32:14');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (338, 200, 9, 35, '2017-11-05 04:59:30');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (339, 694, 10, 90, '2018-04-12 20:48:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (340, 127, 10, 123, '2018-04-19 20:01:31');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (341, 212, 3, 58, '2018-05-10 12:51:00');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (342, 210, 8, 152, '2017-09-07 07:37:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (343, 939, 4, 111, '2017-10-23 06:05:27');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (344, 438, 3, 23, '2018-10-12 14:07:08');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (345, 759, 10, 96, '2019-01-03 07:45:03');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (346, 873, 6, 65, '2019-04-23 01:41:28');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (347, 646, 2, 121, '2018-07-13 02:40:14');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (348, 275, 2, 28, '2018-11-18 20:47:22');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (349, 247, 4, 153, '2017-09-08 23:24:37');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (350, 956, 7, 34, '2017-09-30 12:39:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (351, 246, 7, 45, '2017-12-23 19:42:27');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (352, 603, 1, 53, '2019-01-06 01:00:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (353, 714, 5, 82, '2018-12-24 20:59:20');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (354, 143, 10, 192, '2017-06-29 13:18:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (355, 644, 8, 171, '2017-07-23 10:13:23');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (356, 315, 3, 162, '2018-07-13 10:30:30');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (357, 612, 7, 152, '2019-04-07 15:34:12');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (358, 748, 2, 150, '2018-02-11 00:30:01');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (359, 347, 9, 143, '2018-07-21 04:38:48');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (360, 494, 8, 193, '2018-08-20 08:05:46');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (361, 605, 10, 140, '2017-12-08 21:39:51');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (362, 412, 7, 103, '2017-11-09 12:43:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (363, 562, 8, 50, '2017-07-22 05:53:30');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (364, 167, 4, 195, '2019-04-16 23:34:40');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (365, 625, 6, 106, '2019-03-11 02:56:22');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (366, 939, 5, 189, '2017-10-22 20:07:43');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (367, 256, 4, 151, '2017-08-14 19:38:52');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (368, 981, 3, 194, '2018-07-17 18:22:13');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (369, 599, 9, 32, '2018-10-03 15:58:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (370, 456, 6, 122, '2017-10-04 02:53:55');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (371, 233, 7, 177, '2019-02-27 21:10:36');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (372, 594, 8, 195, '2018-02-13 01:44:47');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (373, 480, 8, 114, '2018-08-03 16:34:13');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (374, 641, 7, 64, '2018-03-08 22:59:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (375, 758, 2, 84, '2018-09-12 07:21:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (376, 671, 10, 179, '2018-11-17 15:41:35');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (377, 314, 8, 28, '2017-06-15 15:51:48');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (378, 291, 1, 3, '2019-01-27 09:43:03');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (379, 390, 3, 177, '2018-11-29 06:32:26');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (380, 430, 10, 162, '2018-01-03 17:55:29');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (381, 957, 3, 21, '2019-01-19 07:40:12');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (382, 520, 1, 109, '2017-07-25 18:36:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (383, 933, 6, 58, '2019-04-23 17:07:48');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (384, 450, 6, 35, '2017-12-14 07:08:43');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (385, 75, 4, 54, '2017-06-19 01:56:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (386, 510, 7, 167, '2019-03-26 18:12:56');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (387, 368, 4, 103, '2018-07-02 05:41:01');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (388, 993, 9, 182, '2018-11-05 03:37:43');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (389, 74, 5, 10, '2018-10-14 13:58:37');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (390, 150, 8, 131, '2019-02-03 14:44:38');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (391, 234, 10, 164, '2019-02-27 00:27:05');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (392, 207, 3, 3, '2018-08-16 04:09:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (393, 87, 7, 65, '2017-08-05 00:31:44');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (394, 518, 3, 98, '2018-10-08 13:14:05');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (395, 288, 3, 75, '2019-01-25 23:21:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (396, 97, 8, 107, '2017-08-24 15:58:11');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (397, 46, 5, 33, '2017-06-23 11:31:45');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (398, 977, 10, 197, '2017-07-10 02:46:31');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (399, 730, 4, 51, '2018-08-03 11:59:22');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (400, 611, 7, 162, '2018-09-27 13:42:30');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (401, 881, 4, 17, '2018-03-23 00:11:49');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (402, 427, 2, 185, '2019-02-15 10:11:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (403, 483, 1, 190, '2018-06-27 18:06:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (404, 737, 3, 36, '2018-03-18 14:56:37');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (405, 594, 1, 136, '2018-08-16 15:27:47');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (406, 215, 10, 175, '2019-01-08 13:44:43');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (407, 835, 3, 167, '2018-06-27 14:25:56');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (408, 930, 7, 171, '2018-03-02 01:02:50');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (409, 215, 3, 104, '2018-05-31 22:27:22');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (410, 678, 5, 63, '2017-08-15 22:14:11');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (411, 525, 6, 114, '2019-02-06 21:07:45');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (412, 973, 3, 179, '2018-03-19 23:08:54');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (413, 53, 3, 173, '2018-01-22 19:50:56');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (414, 558, 9, 99, '2018-02-06 00:42:35');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (415, 622, 8, 185, '2018-02-07 10:37:27');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (416, 956, 3, 24, '2017-08-26 04:44:59');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (417, 278, 5, 40, '2017-07-09 13:52:25');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (418, 369, 10, 76, '2018-06-11 02:26:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (419, 911, 4, 161, '2018-08-21 10:52:54');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (420, 852, 8, 30, '2018-11-08 16:14:49');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (421, 371, 2, 68, '2017-06-08 13:16:47');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (422, 136, 7, 149, '2018-09-22 19:46:25');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (423, 842, 5, 31, '2017-08-14 14:16:02');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (424, 224, 5, 89, '2018-06-07 23:59:21');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (425, 547, 10, 19, '2018-10-10 02:20:02');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (426, 455, 3, 89, '2018-07-02 10:33:45');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (427, 759, 7, 167, '2018-05-21 10:40:29');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (428, 387, 1, 21, '2019-02-12 19:22:55');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (429, 905, 9, 96, '2018-08-20 10:26:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (430, 537, 6, 160, '2018-12-28 01:15:02');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (431, 553, 4, 17, '2018-05-01 18:19:16');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (432, 376, 10, 38, '2018-07-25 13:16:19');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (433, 627, 1, 6, '2018-04-12 16:41:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (434, 54, 9, 7, '2017-09-09 02:37:05');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (435, 335, 6, 161, '2018-10-05 17:43:48');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (436, 529, 1, 98, '2017-06-03 21:05:12');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (437, 636, 1, 125, '2017-08-26 21:31:35');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (438, 24, 10, 188, '2018-07-31 21:19:58');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (439, 735, 7, 62, '2018-11-08 07:35:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (440, 354, 5, 87, '2018-10-05 14:37:31');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (441, 767, 8, 191, '2018-12-07 17:16:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (442, 50, 5, 197, '2019-03-21 04:25:31');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (443, 294, 4, 100, '2018-02-11 16:36:38');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (444, 989, 2, 133, '2019-04-04 19:14:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (445, 526, 7, 5, '2017-06-28 13:40:58');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (446, 841, 7, 173, '2017-08-28 10:41:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (447, 83, 9, 173, '2018-07-06 17:51:11');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (448, 667, 7, 68, '2017-12-08 19:39:51');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (449, 407, 9, 77, '2017-11-28 19:21:28');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (450, 144, 7, 178, '2018-03-09 05:07:17');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (451, 6, 3, 156, '2018-08-05 07:32:09');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (452, 578, 10, 157, '2018-02-19 15:34:24');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (453, 429, 1, 147, '2017-09-28 23:05:05');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (454, 884, 10, 132, '2018-12-03 08:26:37');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (455, 916, 1, 127, '2017-05-17 13:38:32');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (456, 512, 10, 7, '2017-12-27 05:39:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (457, 571, 6, 143, '2018-02-10 21:19:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (458, 54, 9, 117, '2017-07-29 21:17:48');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (459, 607, 8, 82, '2019-01-26 14:49:15');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (460, 884, 10, 190, '2017-07-13 18:06:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (461, 17, 7, 13, '2018-01-02 17:01:27');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (462, 945, 2, 12, '2017-12-25 23:27:07');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (463, 599, 7, 12, '2019-04-10 16:53:40');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (464, 160, 8, 26, '2017-12-28 00:08:00');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (465, 919, 2, 114, '2019-03-11 05:02:34');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (466, 144, 7, 165, '2019-04-26 20:56:28');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (467, 399, 4, 126, '2018-11-19 04:55:40');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (468, 4, 1, 191, '2018-11-21 11:43:47');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (469, 174, 4, 83, '2017-10-20 16:02:48');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (470, 702, 3, 155, '2018-09-23 09:31:58');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (471, 831, 2, 146, '2018-11-30 01:20:05');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (472, 804, 4, 68, '2018-07-22 07:23:21');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (473, 225, 4, 82, '2018-08-15 07:28:17');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (474, 289, 8, 169, '2019-04-13 18:28:40');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (475, 539, 2, 196, '2018-03-11 07:35:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (476, 189, 3, 185, '2017-10-06 08:37:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (477, 389, 1, 24, '2018-05-26 02:28:01');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (478, 429, 2, 5, '2017-06-12 14:46:13');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (479, 42, 8, 32, '2017-07-16 08:59:21');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (480, 825, 3, 93, '2018-07-08 23:16:13');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (481, 305, 5, 189, '2018-11-08 15:11:45');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (482, 430, 5, 22, '2017-09-05 08:15:58');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (483, 505, 6, 57, '2017-12-04 02:24:48');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (484, 241, 9, 122, '2019-01-03 08:24:18');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (485, 54, 1, 93, '2017-12-24 16:53:26');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (486, 578, 8, 79, '2018-08-30 18:56:06');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (487, 445, 5, 44, '2019-02-19 21:15:55');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (488, 776, 6, 4, '2018-12-15 08:18:21');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (489, 417, 8, 110, '2017-08-10 14:19:50');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (490, 874, 7, 93, '2018-11-06 02:51:00');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (491, 303, 3, 22, '2019-04-18 00:57:31');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (492, 439, 1, 37, '2018-06-05 08:39:28');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (493, 993, 6, 30, '2018-12-28 08:58:41');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (494, 860, 9, 42, '2018-07-11 18:48:27');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (495, 714, 2, 196, '2018-10-14 03:39:31');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (496, 401, 9, 37, '2018-06-13 03:20:59');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (497, 160, 9, 20, '2019-02-25 16:55:43');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (498, 642, 6, 83, '2018-01-01 14:04:53');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (499, 358, 9, 13, '2018-05-26 18:37:33');
+insert into topsales (ID, ISBN, QUANTITY, userID, shippingMonth) values (500, 797, 7, 31, '2018-12-20 10:37:58');
