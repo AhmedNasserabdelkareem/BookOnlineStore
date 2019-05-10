@@ -506,7 +506,7 @@ public class ManagerController {
         onlyLetters(orderPubName);
         onlyLetters(addbookpubname);
         onlyLetters(addAuthName);
-        onlyLetters(addAUTHNAME);
+        //onlyLetters(addAUTHNAME);
 
         onlyNums(orderISBN);
         onlyNums(orderQuan);
