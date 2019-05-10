@@ -180,6 +180,7 @@ public class UserController {
                 priceMax = Integer.valueOf(priceMaxTxt.getText());
             }
         } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
 
         if (filterBookTitleCheck.isSelected() && !bookTitleTxt.getText().equals(""))
@@ -188,7 +189,11 @@ public class UserController {
         try {
             if (filterCategoryCheck.isSelected())
                 cat = categoriesMenu.getSelectionModel().getSelectedItem();
+            if(!filterCategoryCheck.isSelected()){
+                cat="null";
+            }
         } catch (NullPointerException e) {
+            e.printStackTrace();
         }
 
         if (filterAuthorCheck.isSelected() && !authorTxt.getText().equals(""))
@@ -200,6 +205,11 @@ public class UserController {
         ResultSet rs = DataBaseHelper.getInstance().searchBook(bookTitle, author, publisher,
                 cat, date, priceMin, priceMax);
         makeSearchTable(rs);
+        try {
+            DataBaseHelper.getInstance().closeConnection();
+        }catch (Exception e){
+
+        }
     }
 
     private void makeSearchTable(ResultSet rs) {
@@ -211,7 +221,6 @@ public class UserController {
 
                 searchResultTable.getItems().add(book);
             }
-            DataBaseHelper.getInstance().closeConnection();
 
         } catch (Exception e) {
             e.printStackTrace();

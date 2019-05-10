@@ -242,7 +242,7 @@ public class ManagerController {
     void promote(ActionEvent event) {
         String un = username.getText();
         if(!DataBaseHelper.getInstance().promote(un)){
-            //TODO username not exists
+            //TODO no usr
         }
     }
 
