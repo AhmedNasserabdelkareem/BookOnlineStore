@@ -1,14 +1,13 @@
 package sample;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -62,7 +61,7 @@ public class ManagerController {
     private TextField addbookprice;
 
     @FXML
-    private TextField addbookcat;
+    private ComboBox<String> addbookcat;
 
     @FXML
     private TextField addbookquant;
@@ -190,7 +189,7 @@ public class ManagerController {
     void addBook(ActionEvent event) {
         try {
             int pyear =Integer.valueOf( pubyear.getText());
-            String cat = addbookcat.getText();
+            String cat = addbookcat.getSelectionModel().getSelectedItem();
             int price =Integer.valueOf(addbookprice.getText());
             int quan =  Integer.valueOf( addbookquant.getText());
             String pubName = addbookpubname.getText();
@@ -424,5 +423,44 @@ public class ManagerController {
     @FXML
     void viewAuth(){
         show(author2Pane);
+    }
+
+    public void initialize(){
+
+        addbookcat.getItems().removeAll(addbookcat.getItems());
+        addbookcat.getItems().addAll("Science", "Art", "Religion", "History", "Geography");
+        addbookcat.getSelectionModel().select("Science");
+
+        onlyLetters(orderPubName);
+        onlyLetters(addbookpubname);
+
+        onlyNums(orderISBN);
+        onlyNums(orderQuan);
+        onlyNums(addBookISBN);
+        onlyNums(pubyear);
+        onlyNums(addbookprice);
+        onlyNums(addbookquant);
+        onlyNums(addbookthres);
+
+    }
+
+    private void onlyLetters (TextField textField){
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\sa-zA-Z*")) {
+                textField.setText(newValue.replaceAll("[^\\sa-zA-Z]", ""));
+            }
+        });
+    }
+
+    void onlyNums(TextField textField) {
+        textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    textField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 }
