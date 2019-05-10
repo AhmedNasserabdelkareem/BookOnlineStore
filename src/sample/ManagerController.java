@@ -8,9 +8,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.BookSearchResult;
+import model.PublisherOrder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -157,9 +160,20 @@ public class ManagerController {
     @FXML
     private VBox analysisVbox;
 
+    @FXML
+    private TableView publisherOrdersTable;
+
+    @FXML
+    private TableColumn publisherOrdersIsbn;
+
+    @FXML
+    private TableColumn publisherOrderPublisher;
+
+
+
     private int lastAddedBookISBN = -1;
 
-    private static Stage managerStage;
+    public static Stage managerStage;
     private String authorNameToAdd;
 
     public Stage getStage(){
@@ -225,14 +239,15 @@ public class ManagerController {
 
     @FXML
     void confirmOrder(ActionEvent event) {
-        int isbn = Integer.valueOf(cOrderISBN.getText());
-        String pubName = cOrderPubN.getText();
-        if (!DataBaseHelper.getInstance().confirmOrder(isbn, pubName)) {
+        PublisherOrder selectedItem = (PublisherOrder) publisherOrdersTable.getSelectionModel().getSelectedItem();
+        if (selectedItem == null)
+            return;
+
+        if (!DataBaseHelper.getInstance().confirmOrder(selectedItem.getIsbn(), selectedItem.getPublisherName())) {
             //TODO error
         } else {
+            publisherOrdersTable.getItems().remove(selectedItem);
             MassageController.getInstance().show("Successfully Confirmed");
-            cOrderISBN.setText("");
-            cOrderPubN.setText("");
         }
     }
 
@@ -295,6 +310,21 @@ public class ManagerController {
     @FXML
     void STconfOrd(ActionEvent event) {
         show(confirmPane);
+        ResultSet result = DataBaseHelper.getInstance().get_unconfirmed_orders();
+        if (result == null)
+            return;
+
+        try {
+
+            while (result.next()) {
+                PublisherOrder book = new PublisherOrder(result.getInt(1), result.getString(2));
+                publisherOrdersTable.getItems().add(book);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @FXML
@@ -466,13 +496,15 @@ public class ManagerController {
 
     public void initialize() {
 
+        publisherOrdersIsbn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        publisherOrderPublisher.setCellValueFactory(new PropertyValueFactory<>("publisherName"));
+
         addbookcat.getItems().removeAll(addbookcat.getItems());
         addbookcat.getItems().addAll("Science", "Art", "Religion", "History", "Geography");
         addbookcat.getSelectionModel().select("Science");
 
         onlyLetters(orderPubName);
         onlyLetters(addbookpubname);
-        onlyLetters(cOrderPubN);
         onlyLetters(addAuthName);
         onlyLetters(addAUTHNAME);
 
@@ -483,11 +515,10 @@ public class ManagerController {
         onlyNums(addbookprice);
         onlyNums(addbookquant);
         onlyNums(addbookthres);
-        onlyNums(addAuthorTxt);
+//        onlyNums(addAuthorTxt);
         onlyNums(modifyISBN);
         onlyNums(modifyQuantity);
         onlyNums(addPhone);
-        onlyNums(cOrderISBN);
 
     }
 
