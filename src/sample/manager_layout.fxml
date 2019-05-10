@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ManagerController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ManagerController">
    <children>
       <Button fx:id="addBookBTN" layoutX="32.0" layoutY="21.0" mnemonicParsing="false" onAction="#STbook" prefHeight="35.0" prefWidth="238.0" text="add new book" />
       <Button fx:id="modifyBookBTN" layoutX="32.0" layoutY="65.0" mnemonicParsing="false" onAction="#STModBook" prefHeight="35.0" prefWidth="238.0" text="modify existing book" />
@@ -50,14 +50,13 @@
             <Label fx:id="addAuthorLabelISBN" layoutX="90.0" layoutY="116.0" text="book ISBN" />
          </children>
       </Pane>
-      <Pane fx:id="modifyPane" layoutX="332.0" layoutY="105.0" prefHeight="322.0" prefWidth="383.0" visible="false">
+      <Pane fx:id="modifyPane" layoutX="332.0" layoutY="93.0" prefHeight="322.0" prefWidth="383.0" visible="false">
          <children>
             <TextField fx:id="modifyISBN" layoutX="174.0" layoutY="70.0" />
             <Label layoutX="76.0" layoutY="74.0" text="ISBN to modify" />
             <Label layoutX="80.0" layoutY="153.0" text="new Quantity" />
             <TextField fx:id="modifyQuantity" layoutX="174.0" layoutY="149.0" />
             <Button fx:id="modifyBTN2" layoutX="166.0" layoutY="229.0" mnemonicParsing="false" onAction="#modify" text="modify" />
-            <Label fx:id="modifyErrorLbl" layoutX="178.0" layoutY="30.0" text="error label" />
          </children>
       </Pane>
       <Pane fx:id="addpublisherPane1" layoutX="345.0" layoutY="78.0" prefHeight="376.0" prefWidth="324.0" visible="false">
