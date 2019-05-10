@@ -27,7 +27,7 @@ public class DataBaseHelper {
 
     public void openConnection() throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "ai", "2337");
     }
 
 
@@ -80,7 +80,7 @@ public class DataBaseHelper {
     public boolean placeOrder(int isbn, String name, int quan) {
         try {
 
-      openConnection();
+            openConnection();
 //      Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "ai", "2337");
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL place_book_order(\"" + name + "\"," + isbn + "," + quan + ");");
@@ -275,26 +275,31 @@ public class DataBaseHelper {
         } catch (Exception e) {
             MassageController.getInstance().show(e.getMessage());
         }
+        try {
+            DataBaseHelper.getInstance().closeConnection();
+        } catch (Exception e) {
+            MassageController.getInstance().show(e.getMessage());
+        }
         return null;
     }
 
-    public boolean updateUserInfo(String olduserName,String newusername, String oldPass, String newPass,
-                               String fn , String ln , String email , String address, String phone) {
+    public boolean updateUserInfo(String olduserName, String newusername, String oldPass, String newPass,
+                                  String fn, String ln, String email, String address, String phone) {
         try {
             openConnection();
             Statement stmt = con.createStatement();
-            stmt.executeQuery("CALL update_user_info (\"" + olduserName + "\",\""+newusername+ "\",\"" +
-                   encryptWithSQLMD5(oldPass) + "\",\"" + encryptWithSQLMD5(newPass) +
+            stmt.executeQuery("CALL update_user_info (\"" + olduserName + "\",\"" + newusername + "\",\"" +
+                    encryptWithSQLMD5(oldPass) + "\",\"" + encryptWithSQLMD5(newPass) +
                     "\",\"" + fn + "\",\"" +
                     ln + "\",\"" +
-                  email + "\",\"" +
-                  address + "\",\"" +
+                    email + "\",\"" +
+                    address + "\",\"" +
                     phone + "\");");
             con.close();
         } catch (Exception e) {
             MassageController.getInstance().show(e.getMessage());
 
-            return  false;
+            return false;
         }
         return true;
     }
@@ -333,23 +338,23 @@ public class DataBaseHelper {
         }
     }
 
-    public String buildSearchQuery (String title, String authorName, String publisherName, String category, Integer pubYear, Integer priceMin, Integer priceMax){
-		if(title!=null){
-			title="'"+title+"'";
-		}
-		if(authorName!=null){
-			authorName="'"+authorName+"'";
-		}
-		if(publisherName!=null){
-			publisherName="'"+publisherName+"'";
-		}
-		if(category!=null){
-			category="'"+category+"'";
-		}
-    	String query="CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
-                pubYear + "," + priceMax + "," +priceMin + ");";
-    	return query;
-    	
+    public String buildSearchQuery(String title, String authorName, String publisherName, String category, Integer pubYear, Integer priceMin, Integer priceMax) {
+        if (title != null) {
+            title = "'" + title + "'";
+        }
+        if (authorName != null) {
+            authorName = "'" + authorName + "'";
+        }
+        if (publisherName != null) {
+            publisherName = "'" + publisherName + "'";
+        }
+        if (category != null) {
+            category = "'" + category + "'";
+        }
+        String query = "CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
+                pubYear + "," + priceMax + "," + priceMin + ");";
+        return query;
+
     }
 
     public void orderBook(int isbn, int quantity, String username) {
@@ -360,22 +365,21 @@ public class DataBaseHelper {
             MassageController.getInstance().show(e.getMessage());
         }
     }
-    
-    public String encryptWithSQLMD5(String pass){
-    String generatedPassword = "";
-    try {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(pass.getBytes());
-        byte[] bytes = md.digest();
-        StringBuilder sb = new StringBuilder();
-        for(int i=0; i< bytes.length ;i++){
-            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+
+    public String encryptWithSQLMD5(String pass) {
+        String generatedPassword = "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(pass.getBytes());
+            byte[] bytes = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < bytes.length; i++) {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            generatedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
         }
-        generatedPassword = sb.toString();
-    }
-    catch (NoSuchAlgorithmException e){
-    	}
-	return generatedPassword;
+        return generatedPassword;
     }
 
 }

@@ -137,11 +137,10 @@ public class UserController {
         SignInController signInController = new SignInController();
         signInController.show();
         userStage.close();
-        if (currentMC != null)
-            try {
-                currentMC.getStage().close();
-            } catch (Exception e) {//stage not opened
-            }
+        try {
+            ManagerController.managerStage.close();
+        } catch (Exception e) {//stage not opened}
+        }
     }
 
     @FXML
@@ -262,6 +261,12 @@ public class UserController {
         BookSearchResult selectedItem = (BookSearchResult) cartTable.getSelectionModel().getSelectedItem();
         cart.remove(isBookInCart(selectedItem.getIsbn()));
         cartTable.getItems().remove(selectedItem);
+
+        //calculate total money
+        int total = 0;
+        for (Iterator i = cart.iterator(); i.hasNext(); )
+            total += Integer.valueOf(((BookSearchResult) i.next()).getPrice());
+        totalMoney.setText(String.valueOf(total) + "$");
     }
 
     @FXML
@@ -358,9 +363,8 @@ public class UserController {
             userStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent event) {
-                    if (currentMC != null)
                         try {
-                            currentMC.getStage().close();
+                            ManagerController.managerStage.close();
                         } catch (Exception e) {//stage not opened}
                         }
                 }
