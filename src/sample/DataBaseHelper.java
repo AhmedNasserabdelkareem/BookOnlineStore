@@ -29,10 +29,7 @@ public class DataBaseHelper {
     }
 
     public boolean addbook(int isbn, String tilte, String pubname, int pubyear, int price, int quan, int threshold, String cat) {
-
         try {
-
-
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL Add_new_book(" + isbn + ",\"" + tilte + "\",\"" + pubname + "\",\""
@@ -40,7 +37,7 @@ public class DataBaseHelper {
 
             closeConnection();
         } catch (Exception e) {
-            e.printStackTrace();
+            MassageController.getInstance().show(e.getMessage());
             return false;
         }
 
@@ -50,30 +47,26 @@ public class DataBaseHelper {
     }
 
     public boolean addAuthor(int isbn, String authorName) {
-
         try {
-
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL Add_book_authors(" + isbn + ",\"" + authorName + "\");");
             closeConnection();
         } catch (Exception e) {
+            MassageController.getInstance().show(e.getMessage());
             return false;
         }
-
-
         return true;
-
     }
 
     public boolean modifyBook(int isbn, int quan) {
         try {
-
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL modify_book_quantity(" + isbn + "," + quan + ");");
             closeConnection();
         } catch (Exception e) {
+            MassageController.getInstance().show(e.getMessage());
             return false;
         }
 
@@ -85,13 +78,12 @@ public class DataBaseHelper {
         try {
 
       openConnection();
-      Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "ai", "2337");
-
+//      Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "ai", "2337");
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL place_book_order(\"" + name + "\"," + isbn + "," + quan + ");");
             closeConnection();
         } catch (Exception e) {
-            e.printStackTrace();
+            MassageController.getInstance().show(e.getMessage());
             return false;
         }
 
@@ -107,7 +99,7 @@ public class DataBaseHelper {
             stmt.executeQuery("CALL confirm_order(\"" + pname + "\"," + isbn + ");");
             closeConnection();
         } catch (Exception e) {
-            e.printStackTrace();
+            MassageController.getInstance().show(e.getMessage());
             return false;
         }
 
@@ -123,6 +115,7 @@ public class DataBaseHelper {
             stmt.executeQuery("CALL promote_user(\"" + un + "\");");
             closeConnection();
         } catch (Exception e) {
+            MassageController.getInstance().show(e.getMessage());
             return false;
         }
 
@@ -139,8 +132,7 @@ public class DataBaseHelper {
 
             closeConnection();
         } catch (Exception e) {
-            MassageController.getInstance().show("ERR");
-            e.printStackTrace();
+            MassageController.getInstance().show(e.getMessage());
             return false;
         }
 
@@ -150,18 +142,15 @@ public class DataBaseHelper {
     }
 
     public boolean addAddressToAuth(String name, String address) {
-
         try {
-
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL add_publisher_address(\"" + name + "\",\"" + address + "\");");
             closeConnection();
         } catch (Exception e) {
+            MassageController.getInstance().show(e.getMessage());
             return false;
         }
-
-
         return true;
     }
 
@@ -173,6 +162,7 @@ public class DataBaseHelper {
             stmt.executeQuery("CALL add_publisher_phone(\"" + name + "\",\"" + phone + "\");");
             closeConnection();
         } catch (Exception e) {
+            MassageController.getInstance().show(e.getMessage());
             return false;
         }
 
@@ -182,18 +172,14 @@ public class DataBaseHelper {
 
     public boolean addAuthor2(String name) {
         try {
-
             openConnection();
             Statement stmt = con.createStatement();
             stmt.executeQuery("CALL Add_new_authors(\"" + name + "\");");
             closeConnection();
         } catch (Exception e) {
-            MassageController.getInstance().show(e.toString());
-            e.printStackTrace();
+            MassageController.getInstance().show(e.getMessage());
             return false;
         }
-
-
         return true;
     }
 
@@ -208,7 +194,7 @@ public class DataBaseHelper {
 
             return rs;
         } catch (Exception e) {
-            MassageController.getInstance().show(e.toString());
+            MassageController.getInstance().show(e.getMessage());
             return null;
         }
 
@@ -225,7 +211,7 @@ public class DataBaseHelper {
 
             return rs;
         } catch (Exception e) {
-            MassageController.getInstance().show(e.toString());
+            MassageController.getInstance().show(e.getMessage());
             return null;
         }
 
@@ -241,7 +227,7 @@ public class DataBaseHelper {
 
             return rs;
         } catch (Exception e) {
-            MassageController.getInstance().show(e.toString());
+            MassageController.getInstance().show(e.getMessage());
             return null;
         }
 
@@ -259,7 +245,7 @@ public class DataBaseHelper {
 
             return rs;
         } catch (Exception e) {
-            MassageController.getInstance().show(e.toString());
+            MassageController.getInstance().show(e.getMessage());
         }
         return null;
     }
@@ -272,7 +258,7 @@ public class DataBaseHelper {
 
             return stmt.getResultSet();
         } catch (Exception e) {
-            MassageController.getInstance().show(e.toString());
+            MassageController.getInstance().show(e.getMessage());
         }
         return null;
     }
@@ -285,7 +271,7 @@ public class DataBaseHelper {
                     phone + "\");");
             con.close();
         } catch (Exception e) {
-            MassageController.getInstance().show(e.toString());
+            MassageController.getInstance().show(e.getMessage());
         }
     }
 
@@ -303,8 +289,7 @@ public class DataBaseHelper {
             con.close();
             return count;
         } catch (Exception e) {
-            e.printStackTrace();
-            MassageController.getInstance().show(e.toString());
+            MassageController.getInstance().show(e.getMessage());
         }
         return -1;
 
@@ -319,7 +304,7 @@ public class DataBaseHelper {
             con.close();
             return true;
         } catch (Exception e) {
-            MassageController.getInstance().show(e.toString());
+            MassageController.getInstance().show(e.getMessage());
             return false;
         }
     }
@@ -346,9 +331,9 @@ public class DataBaseHelper {
     public void orderBook(int isbn, int quantity, String username) {
         try {
             Statement stmt = con.createStatement();
-            stmt.executeQuery("CALL insert_order_history (" + isbn + "," + quantity + "\",\"" + username + "\");");
+            stmt.executeQuery("CALL insert_order_history (" + isbn + "," + quantity + ",'" + username + "');");
         } catch (Exception e) {
-            MassageController.getInstance().show(e.toString());
+            MassageController.getInstance().show(e.getMessage());
         }
     }
 
