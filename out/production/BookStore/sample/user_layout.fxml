@@ -9,7 +9,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
@@ -20,7 +19,7 @@
             <Font name="System Bold" size="12.0" />
          </font></Button>
       <TextField fx:id="bookTitleTxt" disable="true" layoutX="48.0" layoutY="161.0" prefHeight="25.0" prefWidth="256.0" />
-      <ComboBox fx:id="categoriesMenu" disable="true" editable="true" layoutX="48.0" layoutY="126.0" prefWidth="256.0" promptText="All Categories" />
+      <ComboBox fx:id="categoriesMenu" disable="true" layoutX="48.0" layoutY="126.0" prefWidth="256.0" promptText="All Categories" />
       <TextField fx:id="authorTxt" disable="true" layoutX="48.0" layoutY="201.0" prefHeight="25.0" prefWidth="256.0" />
       <TextField fx:id="publisherTxt" disable="true" layoutX="48.0" layoutY="242.0" prefHeight="25.0" prefWidth="256.0" />
       <CheckBox fx:id="filterBookTitleCheck" layoutX="323.0" layoutY="165.0" mnemonicParsing="false" onAction="#filterBookTitle" text="book title" />
@@ -46,21 +45,17 @@
       </Label>
       <TextField fx:id="priceMaxTxt" disable="true" layoutX="200.0" layoutY="323.0" prefHeight="25.0" prefWidth="104.0" />
       <CheckBox fx:id="filterCategoryCheck" layoutX="321.0" layoutY="130.0" mnemonicParsing="false" onAction="#filterCategories" text="Category" />
-      <ScrollPane layoutX="48.0" layoutY="470.0" prefHeight="175.0" prefWidth="398.0">
-        <content>
-          <AnchorPane fx:id="searchResultView" minHeight="0.0" minWidth="0.0" prefHeight="171.0" prefWidth="394.0">
-               <children>
-                  <TableView fx:id="searchResultTable" layoutX="-2.0" layoutY="-4.0" prefHeight="175.0" prefWidth="398.0">
-                    <columns>
-                      <TableColumn prefWidth="174.0" text="Title" />
-                      <TableColumn prefWidth="55.0" text="Year" />
-                        <TableColumn minWidth="8.0" prefWidth="63.0" text="Price" />
-                        <TableColumn prefWidth="62.0" text="Quantity" />
-                        <TableColumn prefWidth="43.0" text="Cart" />
-                    </columns>
-                  </TableView>
-               </children></AnchorPane>
-        </content>
+      <ScrollPane layoutX="48.0" layoutY="457.0" prefHeight="175.0" prefWidth="398.0">
+         <content>
+            <TableView fx:id="searchResultTable" prefHeight="173.0" prefWidth="396.0">
+               <columns>
+                  <TableColumn fx:id="searchTableTitle" prefWidth="213.0" text="Title" />
+                  <TableColumn fx:id="searchTableYear" prefWidth="66.0" text="Year" />
+                  <TableColumn fx:id="searchTablePrice" minWidth="8.0" prefWidth="56.0" text="Price" />
+                  <TableColumn fx:id="searchTableQuantity" prefWidth="58.0" text="Quantity" />
+               </columns>
+            </TableView>
+         </content>
       </ScrollPane>
       <Label layoutX="48.0" layoutY="420.0" text="Result">
          <font>
@@ -73,17 +68,24 @@
             <Font name="Calibri" size="32.0" />
          </font>
       </Label>
-      <ScrollPane fx:id="cartView" layoutX="493.0" layoutY="109.0" prefHeight="424.0" prefWidth="398.0">
+      <ScrollPane fx:id="cartView" layoutX="493.0" layoutY="109.0" prefHeight="397.0" prefWidth="398.0">
          <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="419.0" prefWidth="394.0" />
+            <TableView fx:id="cartTable" prefHeight="394.0" prefWidth="395.0">
+               <columns>
+                  <TableColumn fx:id="cartTableTitle" prefWidth="203.0" text="Title" />
+                  <TableColumn fx:id="cartTableYear" prefWidth="61.0" text="Year" />
+                  <TableColumn fx:id="cartTablePrice" minWidth="8.0" prefWidth="60.0" text="Price" />
+                  <TableColumn fx:id="cartTableQuantity" prefWidth="70.0" text="Quantity" />
+               </columns>
+            </TableView>
          </content>
       </ScrollPane>
-      <Label layoutX="518.0" layoutY="556.0" text="Total">
+      <Label layoutX="508.0" layoutY="614.0" text="Total">
          <font>
             <Font name="Calibri" size="32.0" />
          </font>
       </Label>
-      <Label layoutX="809.0" layoutY="556.0" text="5000$" textAlignment="CENTER">
+      <Label fx:id="totalMoney" layoutX="632.0" layoutY="614.0" text="0$" textAlignment="CENTER">
          <font>
             <Font name="Calibri" size="32.0" />
          </font>
@@ -104,5 +106,21 @@
          </font>
       </Button>
       <TextField fx:id="publishDate" disable="true" layoutX="51.0" layoutY="283.0" prefHeight="25.0" prefWidth="256.0" />
+      <Button fx:id="addToCart" layoutX="344.0" layoutY="636.0" mnemonicParsing="false" onAction="#addToCart" prefHeight="25.0" prefWidth="103.0" text="Add to Cart">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="removeFromCart" layoutX="758.0" layoutY="520.0" mnemonicParsing="false" onAction="#removeFromCart" prefHeight="25.0" prefWidth="133.0" text="Remove From Cart">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <TextField fx:id="quantityTxt" layoutX="129.0" layoutY="637.0" prefHeight="25.0" prefWidth="54.0" />
+      <Label layoutX="49.0" layoutY="639.0" prefHeight="20.0" prefWidth="66.0" text="Quantity">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

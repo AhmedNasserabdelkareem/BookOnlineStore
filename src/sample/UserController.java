@@ -213,6 +213,7 @@ public class UserController {
     }
 
     private void makeSearchTable(ResultSet rs) {
+    	int count=0;
         try {
 
             while (rs.next()) {
@@ -220,7 +221,9 @@ public class UserController {
                         rs.getString(5), rs.getString(8));
 
                 searchResultTable.getItems().add(book);
+                count++;
             }
+            System.out.println("The result rows count : "+count);
 
         } catch (Exception e) {
             e.printStackTrace();

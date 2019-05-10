@@ -5,11 +5,10 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ManagerController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ManagerController">
    <children>
       <Button fx:id="addBookBTN" layoutX="32.0" layoutY="21.0" mnemonicParsing="false" onAction="#STbook" prefHeight="35.0" prefWidth="238.0" text="add new book" />
       <Button fx:id="modifyBookBTN" layoutX="32.0" layoutY="65.0" mnemonicParsing="false" onAction="#STModBook" prefHeight="35.0" prefWidth="238.0" text="modify existing book" />
@@ -58,7 +57,7 @@
             <Label fx:id="modifyErrorLbl" layoutX="178.0" layoutY="30.0" text="error label" />
          </children>
       </Pane>
-      <Pane fx:id="addAuthorPane1" layoutX="345.0" layoutY="78.0" prefHeight="376.0" prefWidth="324.0" visible="false">
+      <Pane fx:id="addpublisherPane1" layoutX="345.0" layoutY="78.0" prefHeight="376.0" prefWidth="324.0" visible="false">
          <children>
             <TextField fx:id="addAddress" layoutX="161.0" layoutY="149.0" />
             <Button fx:id="addAuthor1" layoutX="61.0" layoutY="149.0" mnemonicParsing="false" onAction="#addAuthAddress" text="add address" />
@@ -67,11 +66,11 @@
             <TextField fx:id="addPhone" layoutX="161.0" layoutY="199.0" />
          </children>
       </Pane>
-      <Pane fx:id="addAuthorPane" layoutX="345.0" layoutY="67.0" prefHeight="376.0" prefWidth="324.0" visible="false">
+      <Pane fx:id="addpubPane" layoutX="345.0" layoutY="67.0" prefHeight="376.0" prefWidth="324.0">
          <children>
             <TextField fx:id="addAuthName" layoutX="161.0" layoutY="149.0" />
             <Label layoutX="61.0" layoutY="153.0" text="publisher name" />
-            <Button fx:id="addAuthor" layoutX="136.0" layoutY="280.0" mnemonicParsing="false" onAction="#addAuthor" text="add publisher" />
+            <Button fx:id="addAuthor" layoutX="136.0" layoutY="280.0" mnemonicParsing="false" onAction="#addpublisher" text="add publisher" />
          </children>
       </Pane>
       <Pane fx:id="author2Pane" layoutX="355.0" layoutY="56.0" prefHeight="376.0" prefWidth="324.0" visible="false">
@@ -98,11 +97,11 @@
          </children>
       </Pane>
       <ScrollPane fx:id="analysis" layoutX="344.0" layoutY="66.0" prefHeight="376.0" prefWidth="365.0" visible="false">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-        </content>
+         <content>
+            <VBox fx:id="analysisVbox" prefHeight="373.0" prefWidth="362.0" />
+         </content>
       </ScrollPane>
-      <Button fx:id="addAuthor" layoutX="31.0" layoutY="298.0" mnemonicParsing="false" onAction="#viewAddAuth" prefHeight="35.0" prefWidth="238.0" text="add publisher" />
+      <Button fx:id="addAuthor" layoutX="31.0" layoutY="298.0" mnemonicParsing="false" onAction="#viewAddpub" prefHeight="35.0" prefWidth="238.0" text="add publisher" />
       <Button fx:id="addPub" layoutX="31.0" layoutY="249.0" mnemonicParsing="false" onAction="#viewAuth" prefHeight="35.0" prefWidth="238.0" text="add author" />
       <Pane fx:id="placeOrderpane" layoutX="365.0" layoutY="66.0" prefHeight="376.0" prefWidth="324.0" visible="false">
          <children>

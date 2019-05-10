@@ -13,11 +13,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 //
-        SignUpController signUpController = new SignUpController();
-        signUpController.show();
-
-//        UserController userController = new UserController();
-//        userController.show(true);
+     //   SignUpController signUpController = new SignUpController();
+       // signUpController.show();
+        UserController userController = new UserController();
+        userController.show();
 
 //        SignInController signInController = new SignInController();
 //        signInController.show();
