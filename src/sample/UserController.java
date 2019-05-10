@@ -135,6 +135,7 @@ public class UserController {
         SignInController signInController = new SignInController();
         signInController.show();
         userStage.close();
+        if(currentMC!=null)
         currentMC.getStage().close();
     }
     @FXML
