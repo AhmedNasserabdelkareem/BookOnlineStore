@@ -265,6 +265,19 @@ public class DataBaseHelper {
         return null;
     }
 
+
+    public ResultSet get_unconfirmed_orders() {
+        try {
+            openConnection();
+            Statement stmt = con.createStatement();
+            stmt.executeQuery("CALL Retreive_unconfimed_orders ();");
+            return stmt.getResultSet();
+        } catch (Exception e) {
+            MassageController.getInstance().show(e.getMessage());
+        }
+        return null;
+    }
+
     public boolean updateUserInfo(String olduserName,String newusername, String oldPass, String newPass,
                                String fn , String ln , String email , String address, String phone) {
         try {
