@@ -55,17 +55,19 @@ public class OrderController {
         }
     }
 
-    private void orderBooks(){
+    private void orderBooks() {
         try {
             DataBaseHelper.getInstance().openConnection();
-            for (Iterator i = cart.iterator(); i.hasNext();){
-                BookSearchResult book = (BookSearchResult)i.next();
+            for (Iterator i = cart.iterator(); i.hasNext(); ) {
+                BookSearchResult book = (BookSearchResult) i.next();
                 DataBaseHelper.getInstance().orderBook(book.getIsbn(), Integer.valueOf(book.getQuantity()), UserController.userName);
             }
             DataBaseHelper.getInstance().closeConnection();
         } catch (Exception e) {
             MassageController.getInstance().show(e.getMessage());
         }
+        MassageController.getInstance().show("Order placed successfully");
+        orderStage.close();
     }
 
     // Get the result from Step 2
