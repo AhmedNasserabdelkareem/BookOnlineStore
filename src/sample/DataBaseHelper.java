@@ -249,7 +249,9 @@ closeConnection();
             openConnection();
             Statement stmt = con.createStatement();
             System.out.println("-------------"+title+" "+ authorName+" "+ publisherName+" "+ category+" "+pubYear+" "+priceMax+" "+priceMin);
-            stmt.executeQuery("CALL Search_for_book (\"" + title + "\",\"" + authorName + "\",\"" + publisherName + "\",\"" + category + "\"," +
+//            stmt.executeQuery("CALL Search_for_book (\"" + title + "\",\"" + authorName + "\",\"" + publisherName + "\",\"" + category + "\"," +
+//                    pubYear + "," + priceMin + "," + priceMax + ");");
+            stmt.executeQuery("CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
                     pubYear + "," + priceMin + "," + priceMax + ");");
             ResultSet rs = stmt.getResultSet();
 
