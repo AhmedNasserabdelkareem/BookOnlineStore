@@ -83,13 +83,19 @@ public class ProfileController {
             MassageController.getInstance().show("Password mismatch");
             return;
         }
+        String newUN=usernametxt.getText();
 
-        DataBaseHelper.getInstance().updateUserInfo(
-                UserController.userName,usernametxt.getText()
+
+        if(DataBaseHelper.getInstance().updateUserInfo(
+              UserController.userName,newUN
                 , prOldPass.getText(), prNewPass.getText(),
-                firstnametxt.getText(),lastnametxt.getText(),emailtxt.getText(), prShippingAddress.getText(), prPhoneNumber.getText());
+                firstnametxt.getText(),lastnametxt.getText(),emailtxt.getText(), prShippingAddress.getText(), prPhoneNumber.getText())) {
+            MassageController.getInstance().show("Data updated successfully");
+            UserController.userName = newUN;
 
-        MassageController.getInstance().show("Data updated successfully");
+        }else {
+
+        }
     }
 
     public void initialize() {
