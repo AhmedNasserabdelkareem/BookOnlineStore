@@ -317,8 +317,11 @@ public class ManagerController {
             analysisVbox.getChildren().clear();
             analysisVbox.getChildren().add(new Label("ISBN\tQuantity\tUserID\tDate"));
             try {
-                analysisVbox.getChildren().add(new Label(rs.getInt(2) + " " + rs.getInt(3) +
-                " " + rs.getInt(4) + rs.getDate(5)));
+            	while (rs.next()) {
+
+                analysisVbox.getChildren().add(new Label(rs.getInt(2) + "\t\t" + rs.getInt(3) +
+                "\t" + rs.getInt(4) + "\t"+rs.getDate(5)));
+            	}
             } catch (SQLException e) {
                 MassageController.getInstance().show(e.toString());
             }
@@ -336,9 +339,11 @@ public class ManagerController {
         ResultSet rs = DataBaseHelper.getInstance().top5CustomersInlast3Monthes();
         if (rs != null){
             analysisVbox.getChildren().clear();
-            analysisVbox.getChildren().add(new Label("UserName\tQuantity"));
+            analysisVbox.getChildren().add(new Label("UserName\t\tQuantity"));
             try {
-                analysisVbox.getChildren().add(new Label(rs.getString(1) + " " + rs.getInt(2)));
+            	while (rs.next()) {
+                analysisVbox.getChildren().add(new Label(rs.getString(2)+"\t\t"+rs.getInt(11)));
+            	}
             } catch (SQLException e) {
                 MassageController.getInstance().show(e.toString());
             }
@@ -356,9 +361,11 @@ public class ManagerController {
         ResultSet rs = DataBaseHelper.getInstance().top10salesInLastThreeMonthes();
         if (rs != null){
             analysisVbox.getChildren().clear();
-            analysisVbox.getChildren().add(new Label("Title\tQuantity"));
+            analysisVbox.getChildren().add(new Label("Title\t\tQuantity"));
             try {
-                analysisVbox.getChildren().add(new Label(rs.getString(1) + " " + rs.getString(2)));
+            	while(rs.next()){
+                analysisVbox.getChildren().add(new Label(rs.getString(2) + "\t\t" + rs.getInt(10)));
+            }
             } catch (SQLException e) {
                 MassageController.getInstance().show(e.toString());
             }

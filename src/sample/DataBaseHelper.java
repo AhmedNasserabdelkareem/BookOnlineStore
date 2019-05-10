@@ -25,7 +25,7 @@ public class DataBaseHelper {
 
     public void openConnection() throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "ai", "2337");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?useUnicode=true&characterEncoding=utf8", "root", "2337");
     }
 
     public boolean addbook(int isbn, String tilte, String pubname, int pubyear, int price, int quan, int threshold, String cat) {
@@ -324,29 +324,29 @@ public class DataBaseHelper {
         }
     }
 
-    public String buildSearchQuery(String title, String authorName, String publisherName, String category, Integer pubYear, Integer priceMin, Integer priceMax) {
-        if (title != null) {
-            title = "'" + title + "'";
-        }
-        if (authorName != null) {
-            authorName = "'" + authorName + "'";
-        }
-        if (publisherName != null) {
-            publisherName = "'" + publisherName + "'";
-        }
-        if (category != null) {
-            category = "'" + category + "'";
-        }
-        String query = "CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
-                pubYear + "," + priceMax + "," + priceMin + ");";
-        return query;
-
+    public String buildSearchQuery (String title, String authorName, String publisherName, String category, Integer pubYear, Integer priceMin, Integer priceMax){
+		if(title!=null){
+			title="'"+title+"'";
+		}
+		if(authorName!=null){
+			authorName="'"+authorName+"'";
+		}
+		if(publisherName!=null){
+			publisherName="'"+publisherName+"'";
+		}
+		if(category!=null){
+			category="'"+category+"'";
+		}
+    	String query="CALL Search_for_book (" + title + "," + authorName + "," + publisherName + "," + category + "," +
+                pubYear + "," + priceMax + "," +priceMin + ");";
+    	return query;
+    	
     }
 
     public void orderBook(int isbn, int quantity, String username) {
         try {
             Statement stmt = con.createStatement();
-            stmt.executeQuery("CALL insert_order_history (" + isbn + "," + quantity + "\",\"" + username + "\");");
+            stmt.executeQuery("CALL insert_order_history (" + isbn + "," + quantity + ",'" + username + "');");
         } catch (Exception e) {
             MassageController.getInstance().show(e.toString());
         }
