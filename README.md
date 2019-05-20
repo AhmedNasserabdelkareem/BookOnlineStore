@@ -6,6 +6,7 @@ to support the operations of a simplified online bookstore.
 Also, you to create the necessary forms to perform some operations
 
 *Screenshots*
+
 Sign Up
 
 ![](/imgs/signup.PNG)
@@ -153,6 +154,6 @@ Promote user by manager :
 - ORDERTABLE_BEFORE_DELETE: Check if the order is not confirmed, and the manager is going to  delete the order so the trigger will update the quantity of the book as it should be delivered from the publisher. 
 - TOPSALES_AFTER_INSERT: After user ordered the books the quantity of the books in cart will be decreased and updated in database. 
 - USERS_BEFORE_INSERT: Check if username is already existed or not for sign up process. 
-Events
 
--TOPSALES_UPDATE_EVENT: a scheduled event that removes the previous month sales every month.
+*Events*
+- TOPSALES_UPDATE_EVENT: a scheduled event that removes the previous month sales every month.
