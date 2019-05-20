@@ -1,9 +1,11 @@
 # BookOnlineStore
-Goals
+*Goals*
 The goal is to analyze, design and implement a database system
 to support the operations of a simplified online bookstore.
 Also, you to create the necessary forms to perform some operations
-Screenshots :
+
+*Screenshots*
+
 Sign Up
 
 Sign in
@@ -90,37 +92,39 @@ Confirmation :
 
 Promote user by manager :
 
-EER MODEL
+*EER MODEL*
 
-Stored Procedures
+*Stored Procedures*
 
-Add_book_authors: Insert the relation between author and book because the book can have many authors.
-Add_new_authors: Insert new author with the name attribute to author table. 
-Add_new_book: Insert new book with its properties to book table.
-Add_new_publishers: Insert new publisher using his name to publisher table. 
-Add_publisher_address: Insert relation between publisher and its address because address can be multi-valued.
-Add_publisher_phone: Insert relation between publisher and its phone number because phone can be multi-valued.
-Confirm_order: Change the status of the order to be confirmed to indicate that books are delivered to increase the quantity.
-Insert_order_history: Save the user orders to use it in Get statistics on Top sales books and Top users.
-Modify_book_quantity: Edit the quantity of selected book using ISBN.
-Place_book_order:  insert new order from the admin to save the orders history.
-Promote_user: Change the privileges of users from normal user to admin. 
-Retreive_total_sales: Get the total sales for books in the previous month.
-Retreive_top_customers: Get the top 5 customers who purchase the most purchase amount in descending order for the last three months.
-Retreive_top_sales: Get the top 10 selling books for the last three months.
-Retreive_unconfirmed_orders: Get the unconfirmed orders for manager to change the status of the orders.
-Retreive_user_info: get the user personal data to edit them in profile window.
-Search_for_book: search for books with any attribute one or more.
-Signup: Insert a new record to users table with username,firstname,lastname,encrypted password and address.
-Update_usr_info: used to update personal data for the user like password or address.
-Triggers
+- Add_book_authors: Insert the relation between author and book because the book can have many authors.
+- Add_new_authors: Insert new author with the name attribute to author table. 
+- Add_new_book: Insert new book with its properties to book table.
+- Add_new_publishers: Insert new publisher using his name to publisher table. 
+- Add_publisher_address: Insert relation between publisher and its address because address can be multi-valued.
+- Add_publisher_phone: Insert relation between publisher and its phone number because phone can be multi-valued.
+- Confirm_order: Change the status of the order to be confirmed to indicate that books are delivered to increase the quantity.
+- Insert_order_history: Save the user orders to use it in Get statistics on Top sales books and Top users.
+- Modify_book_quantity: Edit the quantity of selected book using ISBN.
+- Place_book_order:  insert new order from the admin to save the orders history.
+- Promote_user: Change the privileges of users from normal user to admin. 
+- Retreive_total_sales: Get the total sales for books in the previous month.
+- Retreive_top_customers: Get the top 5 customers who purchase the most purchase amount in descending order for the last three months.
+- Retreive_top_sales: Get the top 10 selling books for the last three months.
+- Retreive_unconfirmed_orders: Get the unconfirmed orders for manager to change the status of the orders.
+- Retreive_user_info: get the user personal data to edit them in profile window.
+- Search_for_book: search for books with any attribute one or more.
+- Signup: Insert a new record to users table with username,firstname,lastname,encrypted password and address.
+- Update_usr_info: used to update personal data for the user like password or address.
 
-BOOK_BEFORE_UPDATE : Check if the quantity is not less than zero and if the quantity of book is less than the threshold of the book then a new order of this book will automatically added.
-ORDERTABLE_BEFORE_INSERT: Check if the quantity of the book is less than the threshold to accept the order from manager.
-ORDERTABLE_BEFORE_UPDATE: Check of confirmation status and update the quantity after confirmed the order by the manager.
-ORDERTABLE_BEFORE_DELETE: Check if the order is not confirmed, and the manager is going to  delete the order so the trigger will update the quantity of the book as it should be delivered from the publisher. 
-TOPSALES_AFTER_INSERT: After user ordered the books the quantity of the books in cart will be decreased and updated in database. 
-USERS_BEFORE_INSERT: Check if username is already existed or not for sign up process. 
-Events
+*Triggers*
 
-TOPSALES_UPDATE_EVENT: a scheduled event that removes the previous month sales every month.
+- BOOK_BEFORE_UPDATE : Check if the quantity is not less than zero and if the quantity of book is less than the threshold of the book then a new order of this book will automatically added.
+- ORDERTABLE_BEFORE_INSERT: Check if the quantity of the book is less than the threshold to accept the order from manager.
+- ORDERTABLE_BEFORE_UPDATE: Check of confirmation status and update the quantity after confirmed the order by the manager.
+- ORDERTABLE_BEFORE_DELETE: Check if the order is not confirmed, and the manager is going to  delete the order so the trigger will update the quantity of the book as it should be delivered from the publisher. 
+- TOPSALES_AFTER_INSERT: After user ordered the books the quantity of the books in cart will be decreased and updated in database. 
+- USERS_BEFORE_INSERT: Check if username is already existed or not for sign up process. 
+
+*Events*
+
+- TOPSALES_UPDATE_EVENT: a scheduled event that removes the previous month sales every month.
