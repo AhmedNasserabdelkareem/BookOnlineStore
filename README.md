@@ -1,11 +1,11 @@
 # BookOnlineStore
-*Goals*
+# *Goals*
 
 The goal is to analyze, design and implement a database system
 to support the operations of a simplified online bookstore.
 Also, you to create the necessary forms to perform some operations
 
-*Screenshots*
+# *Screenshots*
 
 Sign Up
 
